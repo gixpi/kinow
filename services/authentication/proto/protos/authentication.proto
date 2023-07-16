@@ -1,0 +1,24 @@
+syntax = "proto3";
+ 
+package authentication;
+
+message SignupRequest{
+    string phone = 1;
+    string agent = 2;
+    string ip = 3;
+}
+
+message MessageResponse{
+    optional string code = 1;
+    optional string msg = 2;
+
+}
+message TokenInfo{
+    string access_token = 1;
+    string refresh_token = 2;
+    int32 expiry = 3;
+}
+
+service AuthenticationService{
+    rpc Signup(SignupRequest) returns (TokenInfo);
+}
