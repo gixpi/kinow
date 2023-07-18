@@ -2,7 +2,7 @@ use serde::Serialize;
 use tonic::Status;
 
 
-#[derive(Debug,Serialize,thiserror::Error)]
+#[derive(Debug,Serialize,thiserror::Error,PartialEq, Eq)]
 pub enum Error{
     #[error("Internal Error: `{0}`")]
     InternalError(String),

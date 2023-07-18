@@ -1,3 +1,4 @@
+use crate::app::models::token::Token;
 use crate::app::types::error::Error;
 use bb8_redis::RedisConnectionManager;
 use bb8_redis::redis::AsyncCommands;
@@ -14,7 +15,6 @@ pub async fn user_exists_by_phone_pg(db_pool:&sqlx::Pool<Postgres>,phone_number:
     Ok(())
 }
 
-
 pub async fn phone_number_exists_rd(db_pool:&bb8::Pool<RedisConnectionManager>,phone_number:&String)->Result<(),Error>{
     let mut rd_db_pool =  db_pool.get()
     .await
@@ -26,4 +26,20 @@ pub async fn phone_number_exists_rd(db_pool:&bb8::Pool<RedisConnectionManager>,p
     }
 
     Ok(())
+}
+
+pub async fn create_token(db_pool:&sqlx::Pool<Postgres>,token_data:&Token)->Result<(),Error>{
+    sqlx::query("INSERT INTO tokens (access_token,refresh_token,user_id,session_id,ip,agent,created_at,expire_at) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)")
+    .bind(token_data.access_token.clone())
+    .bind(token_data.refresh_token.clone())
+    .bind(token_data.user_id)
+    .bind(token_data.session_id)
+    .bind(token_data.ip.clone())
+    .bind(token_data.agent.clone())
+    .bind(token_data.created_at)
+    .bind(token_data.expire_at)
+    .execute(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+    return Ok(())
 }

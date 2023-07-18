@@ -1,19 +1,19 @@
 use chrono::{Local, Timelike};
 
 pub struct Token{
-    user_id:usize,
-    access_token:String,
-    refresh_token:String,
-    session_id:i16,
-    agent:String,
-    ip:String,
-    status:Status,
-    created_at:chrono::DateTime<Local>,
-    expire_at:chrono::DateTime<Local>,
+    pub user_id:i32,
+    pub access_token:String,
+    pub refresh_token:String,
+    pub session_id:i16,
+    pub agent:String,
+    pub ip:String,
+    pub status:Status,
+    pub created_at:chrono::DateTime<Local>,
+    pub expire_at:chrono::DateTime<Local>,
 }
 
 impl Token{
-    pub fn new(user_id:usize,agent:String,ip:String) -> Self{
+    pub fn new(user_id:i32,agent:String,ip:String) -> Self{
         let access_token = idgen::alpha_numeric(32); 
         let refresh_token = idgen::alpha_numeric(32);
         let session_id = idgen::numeric_code_i16(156,32767);
@@ -29,7 +29,6 @@ impl Token{
             expire_at:chrono::Local::now().with_minute(5).unwrap(),
         }
     }
-
     pub fn validate_status(&self)->bool{
         match self.status{
             Status::Banned=>false,
@@ -45,7 +44,7 @@ impl Token{
     }
 }
 
-enum Status{
+pub enum Status{
     Banned,
     Live,
 }

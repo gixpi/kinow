@@ -8,11 +8,12 @@ message SignupRequest{
     string ip = 3;
 }
 
-message MessageResponse{
+message OptionalResponse{
     optional string code = 1;
     optional string msg = 2;
 
 }
+
 message TokenInfo{
     string access_token = 1;
     string refresh_token = 2;
@@ -20,5 +21,5 @@ message TokenInfo{
 }
 
 service AuthenticationService{
-    rpc Signup(SignupRequest) returns (TokenInfo);
+    rpc Signup(SignupRequest) returns (OptionalResponse);
 }

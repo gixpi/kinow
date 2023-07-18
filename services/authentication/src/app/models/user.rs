@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 use chrono::Local;
 use serde::{Serialize, Deserialize};
 
@@ -7,17 +5,17 @@ use serde::{Serialize, Deserialize};
 #[derive(Serialize,Deserialize)]
 pub struct User{
     pub user_id:i32,
-    pub phone:String,
+    pub phone_number:String,
     pub status:Status,
     pub created_at:chrono::DateTime<Local>,
 }
 
 impl User{
-    pub fn new(phone:&String)->Self{
+    pub fn new(phone_number:&String)->Self{
         let user_id = idgen::numeric_code_i32(100483647,2147483647);
         Self{
             user_id,
-            phone:phone.to_owned(),
+            phone_number:phone_number.to_owned(),
             status:Status::default(),
             created_at:chrono::Local::now(),
         }
@@ -29,6 +27,7 @@ pub enum Status{
     OnGoing(chrono::DateTime<Local>),
     Suspended(chrono::DateTime<Local>),
     Deleted(chrono::DateTime<Local>),
+    PermanentBan(chrono::DateTime<Local>),
 }
 
 impl Default for Status{
@@ -43,6 +42,7 @@ impl ToString for Status{
             Status::OnGoing(e)=>format!("OnGoing {}",e),
             Status::Suspended(e)=>format!("Suspended {}",e),
             Status::Deleted(e)=>format!("Deleted {}",e),
+            Status::PermanentBan(e)=>format!("PermanentBan {}",e)
         }
     }
 }

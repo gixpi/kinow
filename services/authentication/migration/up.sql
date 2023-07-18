@@ -5,3 +5,16 @@ CREATE TABLE "users"(
     "status" TEXT NOT NULL,
     created_at timestamp NOT NULL
 );
+
+DROP TABLE IF EXISTS "tokens";
+CREATE TABLE "tokens"(
+    access_token SERIAL NOT NULL PRIMARY KEY,
+    refresh_token SERIAL NOT NULL,
+    user_id SERIAL NOT NULL,
+    session_id SERIAL NOT NULL,
+    status TEXT NOT NULL,
+    ip TEXT NOT NULL,
+    agent TEXT NOT NULL,
+    created_at timestamp NOT NULL,
+    expire_at timestamp NOT NULL
+);

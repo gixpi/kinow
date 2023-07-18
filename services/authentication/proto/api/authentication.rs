@@ -10,7 +10,7 @@ pub struct SignupRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct MessageResponse {
+pub struct OptionalResponse {
     #[prost(string, optional, tag = "1")]
     pub code: ::core::option::Option<::prost::alloc::string::String>,
     #[prost(string, optional, tag = "2")]
@@ -36,7 +36,10 @@ pub mod authentication_service_server {
         async fn signup(
             &self,
             request: tonic::Request<super::SignupRequest>,
-        ) -> std::result::Result<tonic::Response<super::TokenInfo>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::OptionalResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct AuthenticationServiceServer<T: AuthenticationService> {
@@ -125,7 +128,7 @@ pub mod authentication_service_server {
                         T: AuthenticationService,
                     > tonic::server::UnaryService<super::SignupRequest>
                     for SignupSvc<T> {
-                        type Response = super::TokenInfo;
+                        type Response = super::OptionalResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
