@@ -1,4 +1,4 @@
-use crate::app::models;
+use crate::app::{models, pkg};
 use crate::app::types::error::Error;
 use crate::authentication_proto::{SignupRequest,OptionalResponse};
 
@@ -40,6 +40,9 @@ pub async fn signup(pg_db_pool:&sqlx::Pool<Postgres>, rd_db_pool:&bb8::Pool<Redi
 
     let code = idgen::numeric_code_i16(1245, 9864);
 
+    pkg::SMS::new_verification_message(code,String::from("_"), vec![phone_number.as_ref().to_owned()])
+    .send_sms().await?;
+
     let _:() = rd_db_pool.set_ex::<String,String,()>(phone_number.as_ref().to_owned(), value.unwrap(), 120)
     .await
     .map_err(|_|return Error::InternalError("try later #712".to_owned()))?;
@@ -47,7 +50,7 @@ pub async fn signup(pg_db_pool:&sqlx::Pool<Postgres>, rd_db_pool:&bb8::Pool<Redi
     let _:() = rd_db_pool.set_ex::<i16,String,()>(code, phone_number.as_ref().to_owned(), 120)
     .await
     .map_err(|_|return Error::InternalError("try later #712".to_owned()))?;
-
+    
     // let user = User::new(&phone_number);
     // std::mem::drop(phone_number);
     // sqlx::query("INSERT INTO users (user_id,phone_number,status,created_at) VALUES ($1,$2,$3,$4)")

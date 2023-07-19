@@ -9,15 +9,15 @@ use crate::authentication_proto::{SignupRequest,TokenInfo,OptionalResponse};
 pub struct AuthenticationHandler{
     pub postgres_db:Arc<sqlx::Pool<Postgres>>,
     pub redis_db:Arc<bb8::Pool<RedisConnectionManager>>,
-    token_life_exitry:i32
+    pub token_life_expiry:i32
 }
 
 impl AuthenticationHandler{
-    pub fn new(postgres_db:Arc<sqlx::Pool<Postgres>>,redis_db:Arc<bb8::Pool<RedisConnectionManager>>,token_life_exitry:i32)->Self{
+    pub fn new(postgres_db:Arc<sqlx::Pool<Postgres>>,redis_db:Arc<bb8::Pool<RedisConnectionManager>>,token_life_expiry:i32)->Self{
         Self { 
             postgres_db, 
             redis_db,
-            token_life_exitry
+            token_life_expiry
         }
     }
 }
