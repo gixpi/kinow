@@ -1,4 +1,4 @@
-use chrono::{Local, Timelike};
+use chrono::{Local, Timelike, Duration};
 
 pub struct Token{
     pub user_id:i32,
@@ -13,7 +13,7 @@ pub struct Token{
 }
 
 impl Token{
-    pub fn new(user_id:i32,agent:String,ip:String) -> Self{
+    pub fn new(user_id:i32,agent:String,ip:String,expiry:i32) -> Self{
         let access_token = idgen::alpha_numeric(32); 
         let refresh_token = idgen::alpha_numeric(32);
         let session_id = idgen::numeric_code_i16(156,32767);
@@ -26,7 +26,7 @@ impl Token{
             ip,
             status:Status::Live,
             created_at:chrono::Local::now(),
-            expire_at:chrono::Local::now().with_minute(5).unwrap(),
+            expire_at:chrono::Local::now() + Duration::seconds(expiry as i64 ),
         }
     }
     pub fn validate_status(&self)->bool{
