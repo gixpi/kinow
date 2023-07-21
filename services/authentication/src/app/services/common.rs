@@ -2,7 +2,7 @@ use crate::app::models::token::Token;
 use crate::app::types::error::Error;
 use bb8_redis::RedisConnectionManager;
 use bb8_redis::redis::AsyncCommands;
-use sqlx::Postgres;
+use sqlx::{Postgres, Row};
 
 pub async fn user_exists_by_phone_pg(db_pool:&sqlx::Pool<Postgres>,phone_number:&String)->Result<(),Error>{
     let data = sqlx::query("SELECT user_id FROM users WHERE phone_number = $1").bind(phone_number).fetch_optional(db_pool)
@@ -43,4 +43,16 @@ pub async fn create_token(db_pool:&sqlx::Pool<Postgres>,token_data:&Token)->Resu
     .await
     .map_err(|e|return Error::InternalError(e.to_string()))?;
     return Ok(())
+}
+
+pub async fn get_user_id_by_phone_number_pg(db_pool:&sqlx::Pool<Postgres>,phone_number:&String)->Result<Option<i32>,Error>{
+    let row = sqlx::query("SELECT user_id FROM users WHERE phone_number = $1").bind(phone_number).fetch_optional(db_pool)
+    .await
+    .map_err(|e| Error::InternalError(e.to_string()))?;
+    if row.is_none(){
+        return Ok(None)
+    }
+    let row = row.unwrap();
+    let user_id = row.get::<i32,_>("user_id");
+    Ok(Some(user_id))
 }

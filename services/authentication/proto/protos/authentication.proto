@@ -5,6 +5,7 @@ package authentication;
 service AuthenticationService{
     rpc Signup(SignupRequest) returns (OptionalResponse);
     rpc Verify(VerificationRequest) returns (TokenInfo);
+    rpc Signin(SigninRequest) returns (OptionalResponse);
 }
 
 enum VerificationMethod{
@@ -35,4 +36,10 @@ message VerificationRequest{
     string code = 2;
     string agent = 3;
     string ip = 4;
+}
+
+message SigninRequest{
+    string phone = 1;
+    string agent = 2;
+    string ip = 3;
 }

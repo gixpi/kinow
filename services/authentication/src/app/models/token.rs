@@ -1,4 +1,4 @@
-use chrono::{Local, Timelike, Duration};
+use chrono::{Local, Duration};
 
 pub struct Token{
     pub user_id:i32,

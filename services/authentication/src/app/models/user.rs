@@ -7,6 +7,7 @@ pub struct User{
     pub user_id:i32,
     pub phone_number:String,
     pub status:Status,
+    pub role:Role,
     pub created_at:chrono::DateTime<Local>,
 }
 
@@ -17,7 +18,46 @@ impl User{
             user_id,
             phone_number:phone_number.to_owned(),
             status:Status::default(),
+            role:Role::default(),
             created_at:chrono::Local::now(),
+        }
+    }
+}
+
+#[derive(Debug,Serialize,Deserialize)]
+pub enum Role{
+    Owner,
+    Admin,
+    Moderator,
+    User,
+}
+
+impl Default for Role{
+    fn default() -> Self {
+        Self::User
+    }
+}
+
+impl ToString for Role{
+    fn to_string(&self) -> String {
+        match self{
+            Role::Owner => format!("Owner"),
+            Role::Admin => format!("Admin"),
+            Role::Moderator => format!("Moderator"),
+            Role::User => format!("User"),
+        }
+    }
+}
+
+impl From<String> for Role{
+    fn from(value: String) -> Self {
+        let value = value.as_str(); 
+        match value{
+            "Owner" => Role::Owner,
+            "Admin" => Role::Admin,
+            "Moderator" => Role::Moderator,
+            "User" => Role::User,
+            _ => Role::User,
         }
     }
 }
