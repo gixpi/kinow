@@ -9,7 +9,8 @@ pub struct Token{
     pub ip:String,
     pub status:Status,
     pub created_at:chrono::DateTime<Local>,
-    pub expire_at:chrono::DateTime<Local>,
+    pub access_token_expire_at:chrono::DateTime<Local>,
+    pub refresh_token_expire_at:chrono::DateTime<Local>,
 }
 
 impl Token{
@@ -26,7 +27,8 @@ impl Token{
             ip,
             status:Status::Live,
             created_at:chrono::Local::now(),
-            expire_at:chrono::Local::now() + Duration::seconds(expiry as i64 ),
+            access_token_expire_at:chrono::Local::now() + Duration::seconds(expiry as i64),
+            refresh_token_expire_at:chrono::Local::now() + Duration::days(30),
         }
     }
     pub fn validate_status(&self)->bool{
@@ -37,7 +39,7 @@ impl Token{
     }
 
     pub fn validate_expiry(&self)->bool{
-        if self.expire_at > chrono::Local::now(){
+        if self.access_token_expire_at > chrono::Local::now(){
             return true
         }   
         return false

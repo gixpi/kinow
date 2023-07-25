@@ -17,5 +17,6 @@ CREATE TABLE "tokens"(
     ip TEXT NOT NULL,
     agent TEXT NOT NULL,
     created_at timestamp NOT NULL,
-    expire_at timestamp NOT NULL
+    access_token_expire_at timestamp NOT NULL,
+    refresh_token_expire_at timestamp NOT NULL
 );

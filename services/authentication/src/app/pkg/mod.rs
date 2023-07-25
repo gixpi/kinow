@@ -43,7 +43,7 @@ impl SMS{
         .await
         .map_err(|_|return Error::InternalError("sms service #323".to_owned()))?;
         if res.status() != StatusCode::OK{
-            return Err(Error::ServiceError("could not send sms #323".to_owned()))
+            return Err(Error::ServiceError(format!("could not send sms {} #323",res.status())))
         }
         Ok(())
     }
