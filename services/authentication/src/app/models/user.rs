@@ -1,4 +1,4 @@
-use chrono::Local;
+use chrono::Utc;
 use serde::{Serialize, Deserialize};
 
 
@@ -8,7 +8,7 @@ pub struct User{
     pub phone_number:String,
     pub status:Status,
     pub role:Role,
-    pub created_at:chrono::DateTime<Local>,
+    pub created_at:chrono::DateTime<Utc>,
 }
 
 impl User{
@@ -19,7 +19,7 @@ impl User{
             phone_number:phone_number.to_owned(),
             status:Status::default(),
             role:Role::default(),
-            created_at:chrono::Local::now(),
+            created_at:chrono::Utc::now(),
         }
     }
 }
@@ -64,15 +64,15 @@ impl From<String> for Role{
 
 #[derive(Debug,Serialize,Deserialize)]
 pub enum Status{
-    OnGoing(chrono::DateTime<Local>),
-    Suspended(chrono::DateTime<Local>),
-    Deleted(chrono::DateTime<Local>),
-    PermanentBan(chrono::DateTime<Local>),
+    OnGoing(chrono::DateTime<Utc>),
+    Suspended(chrono::DateTime<Utc>),
+    Deleted(chrono::DateTime<Utc>),
+    PermanentBan(chrono::DateTime<Utc>),
 }
 
 impl Default for Status{
     fn default() -> Self {
-        Self::OnGoing(chrono::Local::now())    
+        Self::OnGoing(chrono::Utc::now())    
     }
 }
 
@@ -92,10 +92,10 @@ impl From<String> for Status{
         let (status,time) = value.split_once(' ').unwrap();
 
         match status{
-            "OnGoing"=>Self::OnGoing(time.parse::<chrono::DateTime<Local>>().unwrap()),
-            "Suspended"=>Self::Suspended(time.parse::<chrono::DateTime<Local>>().unwrap()),
-            "Deleted"=>Self::Deleted(time.parse::<chrono::DateTime<Local>>().unwrap()),
-            _=>Self::OnGoing(time.parse::<chrono::DateTime<Local>>().unwrap())
+            "OnGoing"=>Self::OnGoing(time.parse::<chrono::DateTime<Utc>>().unwrap()),
+            "Suspended"=>Self::Suspended(time.parse::<chrono::DateTime<Utc>>().unwrap()),
+            "Deleted"=>Self::Deleted(time.parse::<chrono::DateTime<Utc>>().unwrap()),
+            _=>Self::OnGoing(time.parse::<chrono::DateTime<Utc>>().unwrap())
         }
     }
 }

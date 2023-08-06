@@ -1,4 +1,4 @@
-use chrono::{Local, Duration};
+use chrono::{Duration, Utc};
 
 pub struct Token{
     pub user_id:i32,
@@ -8,9 +8,9 @@ pub struct Token{
     pub agent:String,
     pub ip:String,
     pub status:Status,
-    pub created_at:chrono::DateTime<Local>,
-    pub access_token_expire_at:chrono::DateTime<Local>,
-    pub refresh_token_expire_at:chrono::DateTime<Local>,
+    pub created_at:chrono::DateTime<Utc>,
+    pub access_token_expire_at:chrono::DateTime<Utc>,
+    pub refresh_token_expire_at:chrono::DateTime<Utc>,
 }
 
 impl Token{
@@ -26,9 +26,9 @@ impl Token{
             agent,
             ip,
             status:Status::Live,
-            created_at:chrono::Local::now(),
-            access_token_expire_at:chrono::Local::now() + Duration::seconds(expiry as i64),
-            refresh_token_expire_at:chrono::Local::now() + Duration::days(30),
+            created_at:chrono::Utc::now(),
+            access_token_expire_at:chrono::Utc::now() + Duration::seconds(expiry as i64),
+            refresh_token_expire_at:chrono::Utc::now() + Duration::days(30),
         }
     }
     pub fn validate_status(&self)->bool{
@@ -39,11 +39,9 @@ impl Token{
     }
 
     pub fn validate_expiry(&self)->bool{
-        if self.access_token_expire_at > chrono::Local::now(){
-            return true
-        }   
-        return false
+        self.access_token_expire_at > chrono::Local::now()
     }
+    
 }
 
 pub enum Status{

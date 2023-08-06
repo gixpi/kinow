@@ -1,0 +1,28 @@
+syntax = "proto3";
+ 
+package account;
+
+
+
+message Empty{}
+
+message KillSessionRequest{
+    int32 session_id = 1;
+}
+
+message LogoutRequest{
+    string access_token = 1;
+    int32 user_id = 2;
+}
+
+message Session{
+    string agent = 1;
+    string ip = 2;
+    string status = 3;
+    string session_id = 4;
+    string created_at = 5;
+}
+
+message Sessions {
+    repeated Session session = 1;
+}
