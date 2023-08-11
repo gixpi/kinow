@@ -3,6 +3,11 @@ syntax = "proto3";
 package account;
 
 
+service AccountService{
+    rpc Logout(LogoutRequest) returns (Empty);
+    rpc KillSession(KillSessionRequest) returns (Empty);
+    rpc GetSessions(Empty) returns (Sessions);
+}
 
 message Empty{}
 

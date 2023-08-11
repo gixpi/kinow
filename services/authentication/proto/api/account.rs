@@ -1,149 +1,62 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Pagination {
-    #[prost(int32, tag = "1")]
-    pub offset: i32,
-    #[prost(int32, tag = "2")]
-    pub limit: i32,
-    #[prost(bool, tag = "3")]
-    pub get_total: bool,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Empty {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct VerificationRequest {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub agent: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct VerificationResponse {
+pub struct KillSessionRequest {
     #[prost(int32, tag = "1")]
-    pub user_id: i32,
+    pub session_id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct LogoutRequest {
+    #[prost(string, tag = "1")]
+    pub access_token: ::prost::alloc::string::String,
     #[prost(int32, tag = "2")]
-    pub session_id: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct RenewTokenRequest {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub refresh_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "3")]
-    pub agent: ::prost::alloc::string::String,
-    #[prost(string, tag = "4")]
-    pub ip: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TokenInfo {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub refresh_token: ::prost::alloc::string::String,
-    #[prost(int32, tag = "3")]
-    pub expiry: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct ChangeTokenStatusRequest {
-    #[prost(enumeration = "TokenStatus", tag = "1")]
-    pub token_status: i32,
-    #[prost(string, tag = "2")]
-    pub access_token: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Token {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub refresh_token: ::prost::alloc::string::String,
-    #[prost(int32, tag = "3")]
     pub user_id: i32,
-    #[prost(int32, tag = "4")]
-    pub session_id: i32,
-    #[prost(string, tag = "5")]
-    pub token_status: ::prost::alloc::string::String,
-    #[prost(string, tag = "6")]
-    pub ip: ::prost::alloc::string::String,
-    #[prost(string, tag = "7")]
-    pub agent: ::prost::alloc::string::String,
-    #[prost(string, tag = "8")]
-    pub created_at: ::prost::alloc::string::String,
-    #[prost(string, tag = "9")]
-    pub access_token_expire_at: ::prost::alloc::string::String,
-    #[prost(string, tag = "10")]
-    pub refresh_token_expire_at: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Tokens {
+pub struct Session {
+    #[prost(string, tag = "1")]
+    pub agent: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub ip: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub status: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub session_id: ::prost::alloc::string::String,
+    #[prost(string, tag = "5")]
+    pub created_at: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Sessions {
     #[prost(message, repeated, tag = "1")]
-    pub tokens: ::prost::alloc::vec::Vec<Token>,
-    #[prost(int64, optional, tag = "2")]
-    pub total_count: ::core::option::Option<i64>,
-}
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum TokenStatus {
-    Ban = 0,
-    Live = 1,
-}
-impl TokenStatus {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            TokenStatus::Ban => "BAN",
-            TokenStatus::Live => "LIVE",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "BAN" => Some(Self::Ban),
-            "LIVE" => Some(Self::Live),
-            _ => None,
-        }
-    }
+    pub session: ::prost::alloc::vec::Vec<Session>,
 }
 /// Generated server implementations.
-pub mod token_service_server {
+pub mod account_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with TokenServiceServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with AccountServiceServer.
     #[async_trait]
-    pub trait TokenService: Send + Sync + 'static {
-        async fn verify_token(
+    pub trait AccountService: Send + Sync + 'static {
+        async fn logout(
             &self,
-            request: tonic::Request<super::VerificationRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::VerificationResponse>,
-            tonic::Status,
-        >;
-        async fn renew_token(
-            &self,
-            request: tonic::Request<super::RenewTokenRequest>,
-        ) -> std::result::Result<tonic::Response<super::TokenInfo>, tonic::Status>;
-        async fn change_token_status(
-            &self,
-            request: tonic::Request<super::ChangeTokenStatusRequest>,
+            request: tonic::Request<super::LogoutRequest>,
         ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
-        async fn get_tokens(
+        async fn kill_session(
             &self,
-            request: tonic::Request<super::Pagination>,
-        ) -> std::result::Result<tonic::Response<super::Tokens>, tonic::Status>;
+            request: tonic::Request<super::KillSessionRequest>,
+        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
+        async fn get_sessions(
+            &self,
+            request: tonic::Request<super::Empty>,
+        ) -> std::result::Result<tonic::Response<super::Sessions>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct TokenServiceServer<T: TokenService> {
+    pub struct AccountServiceServer<T: AccountService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -151,7 +64,7 @@ pub mod token_service_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: TokenService> TokenServiceServer<T> {
+    impl<T: AccountService> AccountServiceServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -203,9 +116,9 @@ pub mod token_service_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>> for TokenServiceServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for AccountServiceServer<T>
     where
-        T: TokenService,
+        T: AccountService,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -221,103 +134,13 @@ pub mod token_service_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/token.TokenService/VerifyToken" => {
+                "/account.AccountService/Logout" => {
                     #[allow(non_camel_case_types)]
-                    struct VerifyTokenSvc<T: TokenService>(pub Arc<T>);
+                    struct LogoutSvc<T: AccountService>(pub Arc<T>);
                     impl<
-                        T: TokenService,
-                    > tonic::server::UnaryService<super::VerificationRequest>
-                    for VerifyTokenSvc<T> {
-                        type Response = super::VerificationResponse;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::VerificationRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).verify_token(request).await
-                            };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = VerifyTokenSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/token.TokenService/RenewToken" => {
-                    #[allow(non_camel_case_types)]
-                    struct RenewTokenSvc<T: TokenService>(pub Arc<T>);
-                    impl<
-                        T: TokenService,
-                    > tonic::server::UnaryService<super::RenewTokenRequest>
-                    for RenewTokenSvc<T> {
-                        type Response = super::TokenInfo;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::RenewTokenRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).renew_token(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = RenewTokenSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/token.TokenService/ChangeTokenStatus" => {
-                    #[allow(non_camel_case_types)]
-                    struct ChangeTokenStatusSvc<T: TokenService>(pub Arc<T>);
-                    impl<
-                        T: TokenService,
-                    > tonic::server::UnaryService<super::ChangeTokenStatusRequest>
-                    for ChangeTokenStatusSvc<T> {
+                        T: AccountService,
+                    > tonic::server::UnaryService<super::LogoutRequest>
+                    for LogoutSvc<T> {
                         type Response = super::Empty;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
@@ -325,12 +148,10 @@ pub mod token_service_server {
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::ChangeTokenStatusRequest>,
+                            request: tonic::Request<super::LogoutRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move {
-                                (*inner).change_token_status(request).await
-                            };
+                            let fut = async move { (*inner).logout(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -341,7 +162,7 @@ pub mod token_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = ChangeTokenStatusSvc(inner);
+                        let method = LogoutSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -357,22 +178,26 @@ pub mod token_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/token.TokenService/GetTokens" => {
+                "/account.AccountService/KillSession" => {
                     #[allow(non_camel_case_types)]
-                    struct GetTokensSvc<T: TokenService>(pub Arc<T>);
-                    impl<T: TokenService> tonic::server::UnaryService<super::Pagination>
-                    for GetTokensSvc<T> {
-                        type Response = super::Tokens;
+                    struct KillSessionSvc<T: AccountService>(pub Arc<T>);
+                    impl<
+                        T: AccountService,
+                    > tonic::server::UnaryService<super::KillSessionRequest>
+                    for KillSessionSvc<T> {
+                        type Response = super::Empty;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::Pagination>,
+                            request: tonic::Request<super::KillSessionRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).get_tokens(request).await };
+                            let fut = async move {
+                                (*inner).kill_session(request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -383,7 +208,51 @@ pub mod token_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = GetTokensSvc(inner);
+                        let method = KillSessionSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/account.AccountService/GetSessions" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetSessionsSvc<T: AccountService>(pub Arc<T>);
+                    impl<T: AccountService> tonic::server::UnaryService<super::Empty>
+                    for GetSessionsSvc<T> {
+                        type Response = super::Sessions;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::Empty>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                (*inner).get_sessions(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetSessionsSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -414,7 +283,7 @@ pub mod token_service_server {
             }
         }
     }
-    impl<T: TokenService> Clone for TokenServiceServer<T> {
+    impl<T: AccountService> Clone for AccountServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -426,7 +295,7 @@ pub mod token_service_server {
             }
         }
     }
-    impl<T: TokenService> Clone for _Inner<T> {
+    impl<T: AccountService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -436,7 +305,7 @@ pub mod token_service_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: TokenService> tonic::server::NamedService for TokenServiceServer<T> {
-        const NAME: &'static str = "token.TokenService";
+    impl<T: AccountService> tonic::server::NamedService for AccountServiceServer<T> {
+        const NAME: &'static str = "account.AccountService";
     }
 }

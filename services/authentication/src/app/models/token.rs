@@ -44,6 +44,7 @@ impl Token{
     
 }
 
+#[derive(PartialEq, Eq)]
 pub enum Status{
     Banned,
     Live,
@@ -71,6 +72,16 @@ impl From<String> for Status{
             "Banned"=>Self::Banned,
             "Live"=>Self::Live,
             _=>Self::Live
+        }
+    }
+}
+
+impl From<i32> for Status{
+    fn from(value: i32) -> Self {
+        match value{
+            0=>Self::Banned,
+            1=>Self::Live,
+            _=>Self::Live,
         }
     }
 }

@@ -5,9 +5,17 @@ package token;
 
 service TokenService{
     rpc VerifyToken(VerificationRequest) returns (VerificationResponse);
-    rpc RenewToken(RenewTokenRequest) returns (TokenInfo); 
+    rpc RenewToken(RenewTokenRequest) returns (TokenInfo);
+
+    rpc ChangeTokenStatus(ChangeTokenStatusRequest) returns (Empty);
+    rpc GetTokens(Pagination) returns (Tokens);
 }
 
+message Pagination{
+    int32 offset = 1;
+    int32 limit = 2;
+    bool get_total = 3;
+}
 
 message Empty{
 }
@@ -28,8 +36,37 @@ message RenewTokenRequest{
     string agent = 3;
     string ip = 4;
 }
+
 message TokenInfo{
     string access_token = 1;
     string refresh_token = 2;
     int32 expiry = 3;
+}
+
+enum TokenStatus{
+    BAN = 0;
+    LIVE = 1;
+}
+
+message ChangeTokenStatusRequest{
+    TokenStatus token_status = 1;
+    string access_token = 2;
+}
+
+message Token{
+    string access_token = 1;
+    string refresh_token = 2;
+    int32 user_id = 3;
+    int32 session_id = 4;
+    string token_status = 5;
+    string ip = 6;
+    string agent = 7;
+    string created_at = 8;
+    string access_token_expire_at = 9;
+    string refresh_token_expire_at = 10;
+}
+
+message Tokens{
+    repeated Token tokens = 1;
+    optional int64 total_count = 2;
 }
