@@ -6,7 +6,7 @@ package account;
 service AccountService{
     rpc Logout(LogoutRequest) returns (Empty);
     rpc KillSession(KillSessionRequest) returns (Empty);
-    rpc GetSessions(Empty) returns (Sessions);
+    rpc GetSessions(GetSessionsRequest) returns (Sessions);
 }
 
 message Empty{}
@@ -20,14 +20,18 @@ message LogoutRequest{
     int32 user_id = 2;
 }
 
+message GetSessionsRequest{
+    int32 user_id = 1;
+}
+
 message Session{
     string agent = 1;
     string ip = 2;
     string status = 3;
-    string session_id = 4;
+    int32 session_id = 4;
     string created_at = 5;
 }
 
 message Sessions {
-    repeated Session session = 1;
+    repeated Session sessions = 1;
 }

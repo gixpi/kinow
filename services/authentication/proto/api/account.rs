@@ -17,6 +17,12 @@ pub struct LogoutRequest {
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetSessionsRequest {
+    #[prost(int32, tag = "1")]
+    pub user_id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Session {
     #[prost(string, tag = "1")]
     pub agent: ::prost::alloc::string::String,
@@ -24,8 +30,8 @@ pub struct Session {
     pub ip: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
     pub status: ::prost::alloc::string::String,
-    #[prost(string, tag = "4")]
-    pub session_id: ::prost::alloc::string::String,
+    #[prost(int32, tag = "4")]
+    pub session_id: i32,
     #[prost(string, tag = "5")]
     pub created_at: ::prost::alloc::string::String,
 }
@@ -33,7 +39,7 @@ pub struct Session {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Sessions {
     #[prost(message, repeated, tag = "1")]
-    pub session: ::prost::alloc::vec::Vec<Session>,
+    pub sessions: ::prost::alloc::vec::Vec<Session>,
 }
 /// Generated server implementations.
 pub mod account_service_server {
@@ -52,7 +58,7 @@ pub mod account_service_server {
         ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
         async fn get_sessions(
             &self,
-            request: tonic::Request<super::Empty>,
+            request: tonic::Request<super::GetSessionsRequest>,
         ) -> std::result::Result<tonic::Response<super::Sessions>, tonic::Status>;
     }
     #[derive(Debug)]
@@ -227,7 +233,9 @@ pub mod account_service_server {
                 "/account.AccountService/GetSessions" => {
                     #[allow(non_camel_case_types)]
                     struct GetSessionsSvc<T: AccountService>(pub Arc<T>);
-                    impl<T: AccountService> tonic::server::UnaryService<super::Empty>
+                    impl<
+                        T: AccountService,
+                    > tonic::server::UnaryService<super::GetSessionsRequest>
                     for GetSessionsSvc<T> {
                         type Response = super::Sessions;
                         type Future = BoxFuture<
@@ -236,7 +244,7 @@ pub mod account_service_server {
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::Empty>,
+                            request: tonic::Request<super::GetSessionsRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {

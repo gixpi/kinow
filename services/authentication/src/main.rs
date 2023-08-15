@@ -4,6 +4,7 @@ use authenticationlib::app::config::ParseConfig;
 use authenticationlib::app::{database, handlers};
 use authenticationlib::authentication_proto::authentication_service_server::AuthenticationServiceServer;
 use authenticationlib::token_proto::token_service_server::TokenServiceServer;
+use authenticationlib::account_proto::account_service_server::AccountServiceServer;
 use clap::Parser;
 use tonic::transport::Server;
 
@@ -35,10 +36,14 @@ async fn main() {
     let token_handler = handlers::token::TokenHandler::new(pg_db_pool.clone(),parsed.token_life_expiry.clone());
     let token_service = TokenServiceServer::new(token_handler);
 
+    let account_handler = handlers::account::AccountHandler::new(pg_db_pool.clone());
+    let account_service = AccountServiceServer::new(account_handler);
+
     println!("[INFO] Running Server On {}",parsed.listen_address);
     Server::builder()
     .add_service(authentication_service)
     .add_service(token_service)
+    .add_service(account_service)
     .serve(parsed.listen_address.parse().expect("could not parse the listener address"))
     .await
     .unwrap()
