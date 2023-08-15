@@ -17,6 +17,7 @@ pub async fn user_exists_by_phone_pg(db_pool:&sqlx::Pool<Postgres>,phone_number:
     Ok(())
 }
 
+
 pub async fn phone_number_exists_rd(db_pool:&bb8::Pool<RedisConnectionManager>,phone_number:&String)->Result<(),Error>{
     let mut rd_db_pool =  db_pool.get()
     .await

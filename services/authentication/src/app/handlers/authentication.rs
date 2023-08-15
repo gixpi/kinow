@@ -5,7 +5,16 @@ use sqlx::Postgres;
 use tonic::{Request, Response, Status};
 use crate::app::services;
 use crate::authentication_proto::authentication_service_server::AuthenticationService;
-use crate::authentication_proto::{SignupRequest,TokenInfo,OptionalResponse, VerificationRequest,SigninRequest};
+use crate::authentication_proto::{
+    SignupRequest,
+    TokenInfo,
+    OptionalResponse, 
+    VerificationRequest,
+    SigninRequest, 
+    Users, 
+    ChangeUserStatusRequest,
+    Pagination,
+    Empty};
 pub struct AuthenticationHandler{
     pub postgres_db:Arc<sqlx::Pool<Postgres>>,
     pub redis_db:Arc<bb8::Pool<RedisConnectionManager>>,
@@ -36,6 +45,11 @@ impl AuthenticationService for AuthenticationHandler{
         let res = services::authentication::signin(&self.postgres_db.as_ref(), &self.redis_db.as_ref(), request.into_inner()).await.map_err(|e| return e.to_status())?;
         Ok(Response::new(res))
     }
-
+    async fn get_users(&self,request:Request<Pagination>)->Result<Response<Users>,Status>{
+        todo!("get users")
+    }
+    async fn change_user_status(&self,request:Request<ChangeUserStatusRequest>)->Result<Response<Empty>,Status>{
+        todo!("change user status")
+    }
 }
 

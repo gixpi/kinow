@@ -6,7 +6,7 @@ use crate::authentication_proto::{SignupRequest,OptionalResponse, TokenInfo,Veri
 
 use std::sync::Arc;
 use bb8_redis::{RedisConnectionManager,redis::AsyncCommands};
-use sqlx::Postgres;
+use sqlx::{Postgres, Row};
 use super::common;
 
 pub async fn signup(pg_db_pool:&sqlx::Pool<Postgres>, rd_db_pool:&bb8::Pool<RedisConnectionManager>, data:SignupRequest)->Result<OptionalResponse,Error>{
@@ -132,6 +132,17 @@ pub async fn signin(pg_db_pool:&sqlx::Pool<Postgres>,rd_db_pool:&bb8::Pool<Redis
         }
     }
     
+    let row = sqlx::query("SELECT user_status FROM users WHERE phone_number = $1")
+    .bind(phone_number.as_ref())
+    .fetch_one(pg_db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    let user_status = models::user::Status::from(row.get::<String,_>("user_status"));
+    if !user_status.validate_status(){
+        return Err(Error::ServiceError(format!("your account stauts: {} #400",user_status.to_string())))
+    }
+
     let mut rd_db_pool =  rd_db_pool.get()
     .await
     .map_err(|_|return Error::InternalError("try later #555".to_owned()))?;

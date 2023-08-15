@@ -1,5 +1,18 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Empty {}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Pagination {
+    #[prost(int32, tag = "1")]
+    pub offset: i32,
+    #[prost(int32, tag = "2")]
+    pub limit: i32,
+    #[prost(bool, tag = "3")]
+    pub get_total: bool,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SignupRequest {
     #[prost(string, tag = "1")]
     pub phone: ::prost::alloc::string::String,
@@ -47,6 +60,66 @@ pub struct SigninRequest {
     pub agent: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
     pub ip: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct User {
+    #[prost(int32, tag = "1")]
+    pub user_id: i32,
+    #[prost(string, tag = "2")]
+    pub phone_number: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub status: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
+    pub created_at: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Users {
+    #[prost(message, repeated, tag = "1")]
+    pub user: ::prost::alloc::vec::Vec<User>,
+    #[prost(int64, optional, tag = "2")]
+    pub total_count: ::core::option::Option<i64>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ChangeUserStatusRequest {
+    #[prost(enumeration = "UserStatus", tag = "1")]
+    pub user_status: i32,
+    #[prost(int32, tag = "2")]
+    pub user_id: i32,
+}
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum UserStatus {
+    OnGoing = 0,
+    Suspended = 1,
+    Deleted = 2,
+    PermanentBan = 3,
+}
+impl UserStatus {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            UserStatus::OnGoing => "ON_GOING",
+            UserStatus::Suspended => "SUSPENDED",
+            UserStatus::Deleted => "DELETED",
+            UserStatus::PermanentBan => "PERMANENT_BAN",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ON_GOING" => Some(Self::OnGoing),
+            "SUSPENDED" => Some(Self::Suspended),
+            "DELETED" => Some(Self::Deleted),
+            "PERMANENT_BAN" => Some(Self::PermanentBan),
+            _ => None,
+        }
+    }
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -99,6 +172,14 @@ pub mod authentication_service_server {
             tonic::Response<super::OptionalResponse>,
             tonic::Status,
         >;
+        async fn get_users(
+            &self,
+            request: tonic::Request<super::Pagination>,
+        ) -> std::result::Result<tonic::Response<super::Users>, tonic::Status>;
+        async fn change_user_status(
+            &self,
+            request: tonic::Request<super::ChangeUserStatusRequest>,
+        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct AuthenticationServiceServer<T: AuthenticationService> {
@@ -297,6 +378,95 @@ pub mod authentication_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = SigninSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/authentication.AuthenticationService/GetUsers" => {
+                    #[allow(non_camel_case_types)]
+                    struct GetUsersSvc<T: AuthenticationService>(pub Arc<T>);
+                    impl<
+                        T: AuthenticationService,
+                    > tonic::server::UnaryService<super::Pagination> for GetUsersSvc<T> {
+                        type Response = super::Users;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::Pagination>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move { (*inner).get_users(request).await };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = GetUsersSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/authentication.AuthenticationService/ChangeUserStatus" => {
+                    #[allow(non_camel_case_types)]
+                    struct ChangeUserStatusSvc<T: AuthenticationService>(pub Arc<T>);
+                    impl<
+                        T: AuthenticationService,
+                    > tonic::server::UnaryService<super::ChangeUserStatusRequest>
+                    for ChangeUserStatusSvc<T> {
+                        type Response = super::Empty;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::ChangeUserStatusRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                (*inner).change_user_status(request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = ChangeUserStatusSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(

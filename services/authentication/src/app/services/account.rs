@@ -43,7 +43,4 @@ pub async fn get_sessions(db_pool:&sqlx::Pool<Postgres>,data:GetSessionsRequest)
         sessions.push(session)
     }
     Ok(Sessions { sessions: sessions })
-
-
-    
 }

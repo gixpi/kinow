@@ -4,9 +4,9 @@ use serde::{Serialize, Deserialize};
 
 #[derive(Serialize,Deserialize)]
 pub struct User{
-    pub user_id:i32,
     pub phone_number:String,
     pub status:Status,
+    pub user_id:i32,
     pub role:Role,
     pub created_at:chrono::DateTime<Utc>,
 }
@@ -62,7 +62,7 @@ impl From<String> for Role{
     }
 }
 
-#[derive(Debug,Serialize,Deserialize)]
+#[derive(Debug,Serialize,Deserialize,PartialEq, PartialOrd)]
 pub enum Status{
     OnGoing(chrono::DateTime<Utc>),
     Suspended(chrono::DateTime<Utc>),
@@ -96,6 +96,15 @@ impl From<String> for Status{
             "Suspended"=>Self::Suspended(time.parse::<chrono::DateTime<Utc>>().unwrap()),
             "Deleted"=>Self::Deleted(time.parse::<chrono::DateTime<Utc>>().unwrap()),
             _=>Self::OnGoing(time.parse::<chrono::DateTime<Utc>>().unwrap())
+        }
+    }
+}
+
+impl Status{
+    pub fn validate_status(&self)->bool{
+        match &self{
+            Status::OnGoing(_)=>true,
+            _=>false
         }
     }
 }
