@@ -1,107 +1,104 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SignupRequest {
-    #[prost(string, tag = "1")]
-    pub phone: ::prost::alloc::string::String,
+pub struct DeleteUserRequest {
+    #[prost(int32, tag = "1")]
+    pub user_id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct User {
+    #[prost(int32, tag = "1")]
+    pub user_id: i32,
     #[prost(string, tag = "2")]
-    pub agent: ::prost::alloc::string::String,
+    pub phone_number: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
-    pub ip: ::prost::alloc::string::String,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OptionalResponse {
-    #[prost(string, optional, tag = "1")]
-    pub code: ::core::option::Option<::prost::alloc::string::String>,
-    #[prost(string, optional, tag = "2")]
-    pub msg: ::core::option::Option<::prost::alloc::string::String>,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct TokenInfo {
-    #[prost(string, tag = "1")]
-    pub access_token: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub refresh_token: ::prost::alloc::string::String,
-    #[prost(int32, tag = "3")]
-    pub expiry: i32,
-}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct VerificationRequest {
-    #[prost(enumeration = "VerificationMethod", tag = "1")]
-    pub verification_method: i32,
-    #[prost(string, tag = "2")]
-    pub code: ::prost::alloc::string::String,
-    #[prost(string, tag = "3")]
-    pub agent: ::prost::alloc::string::String,
+    pub user_status: ::prost::alloc::string::String,
     #[prost(string, tag = "4")]
-    pub ip: ::prost::alloc::string::String,
+    pub created_at: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct SigninRequest {
-    #[prost(string, tag = "1")]
-    pub phone: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub agent: ::prost::alloc::string::String,
-    #[prost(string, tag = "3")]
-    pub ip: ::prost::alloc::string::String,
+pub struct Users {
+    #[prost(message, repeated, tag = "1")]
+    pub user: ::prost::alloc::vec::Vec<User>,
+    #[prost(int64, optional, tag = "2")]
+    pub total_count: ::core::option::Option<i64>,
 }
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ChangeUserStatusRequest {
+    #[prost(enumeration = "UserStatus", tag = "1")]
+    pub user_status: i32,
+    #[prost(int32, tag = "2")]
+    pub user_id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Pagination {
+    #[prost(int32, tag = "1")]
+    pub offset: i32,
+    #[prost(int32, tag = "2")]
+    pub limit: i32,
+    #[prost(bool, tag = "3")]
+    pub get_total: bool,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Empty {}
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
-pub enum VerificationMethod {
-    VerifyPhoneNumber = 0,
-    VerifySignIn = 1,
+pub enum UserStatus {
+    OnGoing = 0,
+    Suspended = 1,
+    Deleted = 2,
+    PermanentBan = 3,
 }
-impl VerificationMethod {
+impl UserStatus {
     /// String value of the enum field names used in the ProtoBuf definition.
     ///
     /// The values are not transformed in any way and thus are considered stable
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            VerificationMethod::VerifyPhoneNumber => "VERIFY_PHONE_NUMBER",
-            VerificationMethod::VerifySignIn => "VERIFY_SIGN_IN",
+            UserStatus::OnGoing => "ON_GOING",
+            UserStatus::Suspended => "SUSPENDED",
+            UserStatus::Deleted => "DELETED",
+            UserStatus::PermanentBan => "PERMANENT_BAN",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
     pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
         match value {
-            "VERIFY_PHONE_NUMBER" => Some(Self::VerifyPhoneNumber),
-            "VERIFY_SIGN_IN" => Some(Self::VerifySignIn),
+            "ON_GOING" => Some(Self::OnGoing),
+            "SUSPENDED" => Some(Self::Suspended),
+            "DELETED" => Some(Self::Deleted),
+            "PERMANENT_BAN" => Some(Self::PermanentBan),
             _ => None,
         }
     }
 }
 /// Generated server implementations.
-pub mod authentication_service_server {
+pub mod user_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with AuthenticationServiceServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with UserServiceServer.
     #[async_trait]
-    pub trait AuthenticationService: Send + Sync + 'static {
-        async fn signup(
+    pub trait UserService: Send + Sync + 'static {
+        async fn get_users(
             &self,
-            request: tonic::Request<super::SignupRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::OptionalResponse>,
-            tonic::Status,
-        >;
-        async fn verify(
+            request: tonic::Request<super::Pagination>,
+        ) -> std::result::Result<tonic::Response<super::Users>, tonic::Status>;
+        async fn change_user_status(
             &self,
-            request: tonic::Request<super::VerificationRequest>,
-        ) -> std::result::Result<tonic::Response<super::TokenInfo>, tonic::Status>;
-        async fn signin(
+            request: tonic::Request<super::ChangeUserStatusRequest>,
+        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
+        async fn delete_user(
             &self,
-            request: tonic::Request<super::SigninRequest>,
-        ) -> std::result::Result<
-            tonic::Response<super::OptionalResponse>,
-            tonic::Status,
-        >;
+            request: tonic::Request<super::DeleteUserRequest>,
+        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct AuthenticationServiceServer<T: AuthenticationService> {
+    pub struct UserServiceServer<T: UserService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -109,7 +106,7 @@ pub mod authentication_service_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: AuthenticationService> AuthenticationServiceServer<T> {
+    impl<T: UserService> UserServiceServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -161,10 +158,9 @@ pub mod authentication_service_server {
             self
         }
     }
-    impl<T, B> tonic::codegen::Service<http::Request<B>>
-    for AuthenticationServiceServer<T>
+    impl<T, B> tonic::codegen::Service<http::Request<B>> for UserServiceServer<T>
     where
-        T: AuthenticationService,
+        T: UserService,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -180,24 +176,22 @@ pub mod authentication_service_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/authentication.AuthenticationService/Signup" => {
+                "/user.UserService/GetUsers" => {
                     #[allow(non_camel_case_types)]
-                    struct SignupSvc<T: AuthenticationService>(pub Arc<T>);
-                    impl<
-                        T: AuthenticationService,
-                    > tonic::server::UnaryService<super::SignupRequest>
-                    for SignupSvc<T> {
-                        type Response = super::OptionalResponse;
+                    struct GetUsersSvc<T: UserService>(pub Arc<T>);
+                    impl<T: UserService> tonic::server::UnaryService<super::Pagination>
+                    for GetUsersSvc<T> {
+                        type Response = super::Users;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::SignupRequest>,
+                            request: tonic::Request<super::Pagination>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).signup(request).await };
+                            let fut = async move { (*inner).get_users(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -208,7 +202,7 @@ pub mod authentication_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = SignupSvc(inner);
+                        let method = GetUsersSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -224,24 +218,26 @@ pub mod authentication_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/authentication.AuthenticationService/Verify" => {
+                "/user.UserService/ChangeUserStatus" => {
                     #[allow(non_camel_case_types)]
-                    struct VerifySvc<T: AuthenticationService>(pub Arc<T>);
+                    struct ChangeUserStatusSvc<T: UserService>(pub Arc<T>);
                     impl<
-                        T: AuthenticationService,
-                    > tonic::server::UnaryService<super::VerificationRequest>
-                    for VerifySvc<T> {
-                        type Response = super::TokenInfo;
+                        T: UserService,
+                    > tonic::server::UnaryService<super::ChangeUserStatusRequest>
+                    for ChangeUserStatusSvc<T> {
+                        type Response = super::Empty;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::VerificationRequest>,
+                            request: tonic::Request<super::ChangeUserStatusRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).verify(request).await };
+                            let fut = async move {
+                                (*inner).change_user_status(request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -252,7 +248,7 @@ pub mod authentication_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = VerifySvc(inner);
+                        let method = ChangeUserStatusSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -268,24 +264,24 @@ pub mod authentication_service_server {
                     };
                     Box::pin(fut)
                 }
-                "/authentication.AuthenticationService/Signin" => {
+                "/user.UserService/DeleteUser" => {
                     #[allow(non_camel_case_types)]
-                    struct SigninSvc<T: AuthenticationService>(pub Arc<T>);
+                    struct DeleteUserSvc<T: UserService>(pub Arc<T>);
                     impl<
-                        T: AuthenticationService,
-                    > tonic::server::UnaryService<super::SigninRequest>
-                    for SigninSvc<T> {
-                        type Response = super::OptionalResponse;
+                        T: UserService,
+                    > tonic::server::UnaryService<super::DeleteUserRequest>
+                    for DeleteUserSvc<T> {
+                        type Response = super::Empty;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::SigninRequest>,
+                            request: tonic::Request<super::DeleteUserRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).signin(request).await };
+                            let fut = async move { (*inner).delete_user(request).await };
                             Box::pin(fut)
                         }
                     }
@@ -296,7 +292,7 @@ pub mod authentication_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = SigninSvc(inner);
+                        let method = DeleteUserSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
@@ -327,7 +323,7 @@ pub mod authentication_service_server {
             }
         }
     }
-    impl<T: AuthenticationService> Clone for AuthenticationServiceServer<T> {
+    impl<T: UserService> Clone for UserServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -339,7 +335,7 @@ pub mod authentication_service_server {
             }
         }
     }
-    impl<T: AuthenticationService> Clone for _Inner<T> {
+    impl<T: UserService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -349,8 +345,7 @@ pub mod authentication_service_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: AuthenticationService> tonic::server::NamedService
-    for AuthenticationServiceServer<T> {
-        const NAME: &'static str = "authentication.AuthenticationService";
+    impl<T: UserService> tonic::server::NamedService for UserServiceServer<T> {
+        const NAME: &'static str = "user.UserService";
     }
 }

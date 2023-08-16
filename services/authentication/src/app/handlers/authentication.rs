@@ -10,11 +10,7 @@ use crate::authentication_proto::{
     TokenInfo,
     OptionalResponse, 
     VerificationRequest,
-    SigninRequest, 
-    Users, 
-    ChangeUserStatusRequest,
-    Pagination,
-    Empty};
+    SigninRequest};
 pub struct AuthenticationHandler{
     pub postgres_db:Arc<sqlx::Pool<Postgres>>,
     pub redis_db:Arc<bb8::Pool<RedisConnectionManager>>,
@@ -44,12 +40,6 @@ impl AuthenticationService for AuthenticationHandler{
     async fn signin(&self,request:Request<SigninRequest>)->Result<Response<OptionalResponse>,Status>{
         let res = services::authentication::signin(&self.postgres_db.as_ref(), &self.redis_db.as_ref(), request.into_inner()).await.map_err(|e| return e.to_status())?;
         Ok(Response::new(res))
-    }
-    async fn get_users(&self,request:Request<Pagination>)->Result<Response<Users>,Status>{
-        todo!("get users")
-    }
-    async fn change_user_status(&self,request:Request<ChangeUserStatusRequest>)->Result<Response<Empty>,Status>{
-        todo!("change user status")
     }
 }
 

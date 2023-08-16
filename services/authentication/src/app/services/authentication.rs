@@ -77,7 +77,7 @@ pub async fn verify(pg_db_pool:&sqlx::Pool<Postgres>,rd_db_pool:&bb8::Pool<Redis
         .bind(user.user_id)
         .bind(user.phone_number)
         .bind(user.role.to_string())
-        .bind(user.status.to_string())
+        .bind(user.user_status.to_string())
         .bind(user.created_at)
         .execute(pg_db_pool)
         .await

@@ -1,11 +1,10 @@
 use chrono::Utc;
 use serde::{Serialize, Deserialize};
 
-
 #[derive(Serialize,Deserialize)]
 pub struct User{
     pub phone_number:String,
-    pub status:Status,
+    pub user_status:Status,
     pub user_id:i32,
     pub role:Role,
     pub created_at:chrono::DateTime<Utc>,
@@ -17,7 +16,7 @@ impl User{
         Self{
             user_id,
             phone_number:phone_number.to_owned(),
-            status:Status::default(),
+            user_status:Status::default(),
             role:Role::default(),
             created_at:chrono::Utc::now(),
         }
@@ -62,7 +61,7 @@ impl From<String> for Role{
     }
 }
 
-#[derive(Debug,Serialize,Deserialize,PartialEq, PartialOrd)]
+#[derive(Debug,Serialize,Deserialize,PartialEq, Eq)]
 pub enum Status{
     OnGoing(chrono::DateTime<Utc>),
     Suspended(chrono::DateTime<Utc>),
@@ -96,6 +95,18 @@ impl From<String> for Status{
             "Suspended"=>Self::Suspended(time.parse::<chrono::DateTime<Utc>>().unwrap()),
             "Deleted"=>Self::Deleted(time.parse::<chrono::DateTime<Utc>>().unwrap()),
             _=>Self::OnGoing(time.parse::<chrono::DateTime<Utc>>().unwrap())
+        }
+    }
+}
+
+impl From<i32> for Status{
+    fn from(value: i32) -> Self {
+        match value{
+            0=>Self::OnGoing(chrono::Utc::now()),
+            1=>Self::Suspended(chrono::Utc::now()),
+            2=>Self::Deleted(chrono::Utc::now()),
+            3=>Self::PermanentBan(chrono::Utc::now()),
+            _=>Self::OnGoing(chrono::Utc::now()),
         }
     }
 }
