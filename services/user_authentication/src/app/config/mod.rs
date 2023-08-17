@@ -2,7 +2,7 @@ use clap::Parser;
 
 
 #[derive(Parser, Debug)]
-#[command(author = "gixpi </>", version = "0.0.1", about = "authentication server",)]
+#[command(author = "gixpi </>", version = "0.0.1", about = "user authentication server",)]
 pub struct ParseConfig{
     /// server address 
     /// ex.(127.0.0.1:8080)

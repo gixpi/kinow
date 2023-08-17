@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use authenticationlib::app::config::ParseConfig;
-use authenticationlib::app::{database, handlers};
-use authenticationlib::authentication_proto::authentication_service_server::AuthenticationServiceServer;
-use authenticationlib::token_proto::token_service_server::TokenServiceServer;
-use authenticationlib::account_proto::account_service_server::AccountServiceServer;
-use authenticationlib::user_proto::user_service_server::UserServiceServer;
+use user_authenticationlib::app::config::ParseConfig;
+use user_authenticationlib::app::{database, handlers};
+use user_authenticationlib::authentication_proto::authentication_service_server::AuthenticationServiceServer;
+use user_authenticationlib::token_proto::token_service_server::TokenServiceServer;
+use user_authenticationlib::account_proto::account_service_server::AccountServiceServer;
+use user_authenticationlib::user_proto::user_service_server::UserServiceServer;
 use clap::Parser;
 use tonic::transport::Server;
 

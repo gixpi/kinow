@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package authentication;
+
+
+service AuthenticationSerivce{
+    rpc signup(SignupRequest) returns (Empty);
+    rpc signin(SigninRequest) returns (Empty);
+}
+
+message Empty{}
+
+message SignupRequest{
+    string device_type = 1;
+    string serial_code = 2;
+}
+
+message SigninRequest{
+    string serial_code = 1;
+    string lock_code = 2;
+}

@@ -61,7 +61,7 @@ pub async fn change_user_status(db_pool:&sqlx::Pool<Postgres>,data:&ChangeUserSt
     Ok(Empty{})
 }
 
-pub async fn  delete_user(db_pool:&sqlx::Pool<Postgres>,data:&DeleteUserRequest)->Result<Empty,Error>{
+pub async fn delete_user(db_pool:&sqlx::Pool<Postgres>,data:&DeleteUserRequest)->Result<Empty,Error>{
     sqlx::query("DELETE FROM users WHERE user_id = $1")
     .bind(data.user_id)
     .execute(db_pool)
