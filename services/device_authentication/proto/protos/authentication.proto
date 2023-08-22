@@ -3,19 +3,31 @@ syntax = "proto3";
 package authentication;
 
 
-service AuthenticationSerivce{
-    rpc signup(SignupRequest) returns (Empty);
-    rpc signin(SigninRequest) returns (Empty);
+service AuthenticationService{
+    rpc signup(SignupRequest) returns (SignupResponse);
+    rpc signin(SigninRequest) returns (TokenInfo);
 }
 
-message Empty{}
 
 message SignupRequest{
     string device_type = 1;
     string serial_code = 2;
+    int32 user_id = 3;
+}
+
+message SignupResponse{
+    string serial_code = 1;
+    string lock_code = 2;
 }
 
 message SigninRequest{
     string serial_code = 1;
     string lock_code = 2;
+    string ip = 3;
+}
+
+message TokenInfo{
+    string access_token = 1;
+    string refresh_token = 2;
+    int32 expiry = 3;
 }

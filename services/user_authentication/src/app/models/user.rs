@@ -12,7 +12,7 @@ pub struct User{
 
 impl User{
     pub fn new(phone_number:&String)->Self{
-        let user_id = idgen::numeric_code_i32(100483647,2147483647);
+        let user_id = idgen::numeric_code_i32(10048364,2147483647);
         Self{
             user_id,
             phone_number:phone_number.to_owned(),
@@ -40,10 +40,10 @@ impl Default for Role{
 impl ToString for Role{
     fn to_string(&self) -> String {
         match self{
-            Role::Owner => format!("Owner"),
-            Role::Admin => format!("Admin"),
-            Role::Moderator => format!("Moderator"),
-            Role::User => format!("User"),
+            Role::Owner =>"Owner".to_owned(),
+            Role::Admin => "Admin".to_owned(),
+            Role::Moderator =>"Moderator".to_owned(),
+            Role::User => "User".to_owned(),
         }
     }
 }

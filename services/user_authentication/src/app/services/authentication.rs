@@ -28,11 +28,7 @@ pub async fn signup(pg_db_pool:&sqlx::Pool<Postgres>, rd_db_pool:&bb8::Pool<Redi
     }
     let phone_number = Arc::new(data.phone);
 
-    let pn_result_pg = common::user_exists_by_phone_pg(pg_db_pool, &phone_number.clone()).await;
-    match pn_result_pg{
-        Ok(_)=>{},
-        Err(e)=>return Err(e)
-    }
+    common::user_exists_by_phone_pg(pg_db_pool, &phone_number.clone()).await?;
     let value = serde_json::to_string(&models::user::User::new(&phone_number.clone()))
     .map_err(|_|return Error::InternalError("try later #711".to_owned()))?;
 

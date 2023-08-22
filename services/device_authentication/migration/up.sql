@@ -5,6 +5,7 @@ CREATE TABLE "devices"(
     serial_code TEXT NOT NULL,
     device_status TEXT NOT NULL,
     lock_code TEXT NOT NULL,
+    user_id SERIAL NOT NULL, 
     created_at TIMESTAMPTZ NOT NULL
 );
 

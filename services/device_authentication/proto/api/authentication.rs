@@ -1,13 +1,20 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Empty {}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct SignupRequest {
     #[prost(string, tag = "1")]
     pub device_type: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub serial_code: ::prost::alloc::string::String,
+    #[prost(int32, tag = "3")]
+    pub user_id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SignupResponse {
+    #[prost(string, tag = "1")]
+    pub serial_code: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub lock_code: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -16,25 +23,37 @@ pub struct SigninRequest {
     pub serial_code: ::prost::alloc::string::String,
     #[prost(string, tag = "2")]
     pub lock_code: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub ip: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct TokenInfo {
+    #[prost(string, tag = "1")]
+    pub access_token: ::prost::alloc::string::String,
+    #[prost(string, tag = "2")]
+    pub refresh_token: ::prost::alloc::string::String,
+    #[prost(int32, tag = "3")]
+    pub expiry: i32,
 }
 /// Generated server implementations.
-pub mod authentication_serivce_server {
+pub mod authentication_service_server {
     #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
     use tonic::codegen::*;
-    /// Generated trait containing gRPC methods that should be implemented for use with AuthenticationSerivceServer.
+    /// Generated trait containing gRPC methods that should be implemented for use with AuthenticationServiceServer.
     #[async_trait]
-    pub trait AuthenticationSerivce: Send + Sync + 'static {
+    pub trait AuthenticationService: Send + Sync + 'static {
         async fn signup(
             &self,
             request: tonic::Request<super::SignupRequest>,
-        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::SignupResponse>, tonic::Status>;
         async fn signin(
             &self,
             request: tonic::Request<super::SigninRequest>,
-        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::TokenInfo>, tonic::Status>;
     }
     #[derive(Debug)]
-    pub struct AuthenticationSerivceServer<T: AuthenticationSerivce> {
+    pub struct AuthenticationServiceServer<T: AuthenticationService> {
         inner: _Inner<T>,
         accept_compression_encodings: EnabledCompressionEncodings,
         send_compression_encodings: EnabledCompressionEncodings,
@@ -42,7 +61,7 @@ pub mod authentication_serivce_server {
         max_encoding_message_size: Option<usize>,
     }
     struct _Inner<T>(Arc<T>);
-    impl<T: AuthenticationSerivce> AuthenticationSerivceServer<T> {
+    impl<T: AuthenticationService> AuthenticationServiceServer<T> {
         pub fn new(inner: T) -> Self {
             Self::from_arc(Arc::new(inner))
         }
@@ -95,9 +114,9 @@ pub mod authentication_serivce_server {
         }
     }
     impl<T, B> tonic::codegen::Service<http::Request<B>>
-    for AuthenticationSerivceServer<T>
+    for AuthenticationServiceServer<T>
     where
-        T: AuthenticationSerivce,
+        T: AuthenticationService,
         B: Body + Send + 'static,
         B::Error: Into<StdError> + Send + 'static,
     {
@@ -113,14 +132,14 @@ pub mod authentication_serivce_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/authentication.AuthenticationSerivce/signup" => {
+                "/authentication.AuthenticationService/signup" => {
                     #[allow(non_camel_case_types)]
-                    struct signupSvc<T: AuthenticationSerivce>(pub Arc<T>);
+                    struct signupSvc<T: AuthenticationService>(pub Arc<T>);
                     impl<
-                        T: AuthenticationSerivce,
+                        T: AuthenticationService,
                     > tonic::server::UnaryService<super::SignupRequest>
                     for signupSvc<T> {
-                        type Response = super::Empty;
+                        type Response = super::SignupResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
@@ -157,14 +176,14 @@ pub mod authentication_serivce_server {
                     };
                     Box::pin(fut)
                 }
-                "/authentication.AuthenticationSerivce/signin" => {
+                "/authentication.AuthenticationService/signin" => {
                     #[allow(non_camel_case_types)]
-                    struct signinSvc<T: AuthenticationSerivce>(pub Arc<T>);
+                    struct signinSvc<T: AuthenticationService>(pub Arc<T>);
                     impl<
-                        T: AuthenticationSerivce,
+                        T: AuthenticationService,
                     > tonic::server::UnaryService<super::SigninRequest>
                     for signinSvc<T> {
-                        type Response = super::Empty;
+                        type Response = super::TokenInfo;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,
@@ -216,7 +235,7 @@ pub mod authentication_serivce_server {
             }
         }
     }
-    impl<T: AuthenticationSerivce> Clone for AuthenticationSerivceServer<T> {
+    impl<T: AuthenticationService> Clone for AuthenticationServiceServer<T> {
         fn clone(&self) -> Self {
             let inner = self.inner.clone();
             Self {
@@ -228,7 +247,7 @@ pub mod authentication_serivce_server {
             }
         }
     }
-    impl<T: AuthenticationSerivce> Clone for _Inner<T> {
+    impl<T: AuthenticationService> Clone for _Inner<T> {
         fn clone(&self) -> Self {
             Self(Arc::clone(&self.0))
         }
@@ -238,8 +257,8 @@ pub mod authentication_serivce_server {
             write!(f, "{:?}", self.0)
         }
     }
-    impl<T: AuthenticationSerivce> tonic::server::NamedService
-    for AuthenticationSerivceServer<T> {
-        const NAME: &'static str = "authentication.AuthenticationSerivce";
+    impl<T: AuthenticationService> tonic::server::NamedService
+    for AuthenticationServiceServer<T> {
+        const NAME: &'static str = "authentication.AuthenticationService";
     }
 }
