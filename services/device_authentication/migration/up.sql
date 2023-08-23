@@ -14,6 +14,7 @@ CREATE TABLE "tokens"(
     access_token TEXT NOT NULL PRIMARY KEY,
     refresh_token TEXT NOT NULL,
     device_id SERIAL NOT NULL,
+    device_type TEXT NOT NULL,
     token_status TEXT NOT NULL,
     ip TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL,

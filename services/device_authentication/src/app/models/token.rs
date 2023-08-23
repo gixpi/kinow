@@ -5,6 +5,7 @@ pub struct Token{
     pub access_token:String,
     pub refresh_token:String,
     pub ip:String,
+    pub device_type:String,
     pub status:Status,
     pub created_at:chrono::DateTime<Utc>,
     pub access_token_expire_at:chrono::DateTime<Utc>,
@@ -12,7 +13,7 @@ pub struct Token{
 }
 
 impl Token{
-    pub fn new(device_id:i32,ip:String,expiry:i32) -> Self{
+    pub fn new(device_id:i32,ip:String,expiry:i32,device_type:String) -> Self{
         let access_token = idgen::alpha_numeric(32); 
         let refresh_token = idgen::alpha_numeric(32);
         Self{
@@ -20,6 +21,7 @@ impl Token{
             access_token,
             refresh_token,
             ip,
+            device_type,
             status:Status::Live,
             created_at:chrono::Utc::now(),
             access_token_expire_at:chrono::Utc::now() + Duration::seconds(expiry as i64),

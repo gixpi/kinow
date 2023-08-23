@@ -31,7 +31,7 @@ pub async fn signup(db_pool:&sqlx::Pool<Postgres>,data:SignupRequest)->Result<Si
 
 pub async fn signin(db_pool:&sqlx::Pool<Postgres>,data:SigninRequest,token_life_expiry:i32)->Result<TokenInfo,Error>{
     let ow_data = Arc::new(data);
-    let res = sqlx::query("SELECT device_id FROM devices WHERE serial_code = $1 AND lock_code = $2")
+    let res = sqlx::query("SELECT device_id,device_type FROM devices WHERE serial_code = $1 AND lock_code = $2")
     .bind(ow_data.serial_code.clone())
     .bind(ow_data.lock_code.clone())
     .fetch_optional(db_pool)
@@ -43,7 +43,8 @@ pub async fn signin(db_pool:&sqlx::Pool<Postgres>,data:SigninRequest,token_life_
     }
     let res = res.unwrap();
     let device_id = res.get::<i32,_>("device_id");
-    let token = Token::new(device_id, ow_data.ip.to_owned(), token_life_expiry);
+    let device_type = res.get::<String,_>("device_type");
+    let token = Token::new(device_id, ow_data.ip.to_owned(), token_life_expiry,device_type);
     common::create_token(db_pool, &token).await?;
     Ok(TokenInfo { access_token: token.access_token, refresh_token: token.refresh_token, expiry: token_life_expiry})
 
