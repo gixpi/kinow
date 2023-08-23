@@ -36,7 +36,7 @@ pub async fn create_token(db_pool:&sqlx::Pool<Postgres>,token_data:&Token)->Resu
 }
 
 pub async fn get_token_by_access_token(db_pool:&sqlx::Pool<Postgres>,access_token:&String)->Result<Token,Error>{
-    let row = sqlx::query("SELECT refresh_token,user_id,session_id,token_status,ip,agent,created_at,access_token_expire_at,refresh_token_expire_at FROM tokens WHERE access_token = $1 AND agent = $2")
+    let row = sqlx::query("SELECT refresh_token,device_id,device_type,token_status,ip,created_at,access_token_expire_at,refresh_token_expire_at FROM tokens WHERE access_token = $1")
     .bind(access_token)
     .fetch_optional(db_pool)
     .await
