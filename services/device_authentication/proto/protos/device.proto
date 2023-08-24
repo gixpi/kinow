@@ -1,0 +1,54 @@
+syntax = "proto3";
+ 
+package device;
+
+service DeviceService{
+    rpc GetDevices(Pagination) returns (Devices);
+    rpc ChangeDeviceStatus(ChangeDeviceStatusRequest) returns (Empty);
+    rpc DeleteDevice(DeleteDeviceRequest) returns (Empty);
+
+    rpc GetUserDevices(GetUserDevicesRequest) returns (Devices);
+
+}
+
+enum DeviceStatus{
+    Online = 0;
+    Idle = 1;
+    Offline = 2;
+}
+
+message DeleteDeviceRequest{
+    int32 device_id = 1;
+}
+
+message Device{
+    int32 device_id = 1;
+    string serial_code = 2;
+    string lock_code = 3;
+    string device_type = 4;
+    string device_status = 5;
+    string created_at = 6;
+}
+
+message Devices {
+    repeated Device devices = 1;
+    optional int64 total_count = 2;
+}
+
+message ChangeDeviceStatusRequest{
+    DeviceStatus device_status = 1;
+    int32 device_id = 2;
+}
+
+message Pagination{
+    int32 offset = 1;
+    int32 limit = 2;
+    bool get_total = 3;
+}
+
+message GetUserDevicesRequest{
+    Pagination pagination = 1;
+    int32 user_id = 2; 
+}
+
+message Empty{}

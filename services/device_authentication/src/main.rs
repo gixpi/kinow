@@ -6,6 +6,7 @@ use device_authenticationlib::app::database;
 use device_authenticationlib::app::handlers;
 use device_authenticationlib::authentication_proto::authentication_service_server::AuthenticationServiceServer;
 use device_authenticationlib::token_proto::token_service_server::TokenServiceServer;
+use device_authenticationlib::device_proto::device_service_server::DeviceServiceServer;
 use tonic::transport::Server;
 
 #[tokio::main]
@@ -28,10 +29,16 @@ async fn main() {
     let token_handler = handlers::token::TokenHandler::new(pg_db_pool.clone(),parsed.token_life_expiry.clone());
     let token_service = TokenServiceServer::new(token_handler);
 
+
+    
+    let device_handler = handlers::device::DeviceHandler::new(pg_db_pool);
+    let device_service= DeviceServiceServer::new(device_handler);  
+
     println!("[INFO] Running Server On {}",parsed.listen_address);
     Server::builder()
     .add_service(authentication_service)
     .add_service(token_service)
+    .add_service(device_service)
     .serve(parsed.listen_address.parse().expect("could not parse the listener address"))
     .await
     .unwrap()

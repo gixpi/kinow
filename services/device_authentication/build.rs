@@ -5,6 +5,7 @@ fn main(){
     .compile(&[
         "proto/protos/authentication.proto",
         "proto/protos/token.proto",
+        "proto/protos/device.proto",
         ],&["path"])
     .expect("failed to compile protos");
 }
