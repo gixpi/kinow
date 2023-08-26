@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package rback;
+
+service RBackService{
+    rpc AddRole(AddRoleRequest) returns (Empty);
+    rpc AddUserRole(AddUserRoleRequest) returns (Empty);
+    rpc GetAllRoles(Empty) returns (Roles);
+    rpc GetAllPermissions(Empty) returns (Permissions);
+    rpc GetRolePermissions(GetRolePermissionsRequest) returns (Permissions);
+    rpc GetUserRoles(GetUserRolesRequest) returns (Roles);
+}
+
+message Empty{}
+
+message AddRoleRequest{
+    string role_id = 1;
+    string permission_id = 2;
+}
+
+message AddUserRoleRequest{
+    string role_id = 1;
+    string user_id = 2;
+}
+
+message Permission{
+    string permission_id = 1;
+    string description = 2;
+}
+
+message Permissions{
+    repeated Permission permissions = 1;
+}
+
+message Role{
+    string role_id = 1;
+    string permission_id = 2; 
+}
+
+message Roles{
+    repeated Role roles = 1;
+}
+
+message GetRolePermissionsRequest{
+    string role_id = 1;
+}
+
+message GetUserRolesRequest{
+    string user_id = 1;
+}
