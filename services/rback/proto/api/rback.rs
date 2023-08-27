@@ -3,6 +3,14 @@
 pub struct Empty {}
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct VerifyUserPermissionRequest {
+    #[prost(string, tag = "1")]
+    pub permission_id: ::prost::alloc::string::String,
+    #[prost(int32, tag = "2")]
+    pub user_id: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AddRoleRequest {
     #[prost(string, tag = "1")]
     pub role_id: ::prost::alloc::string::String,
@@ -64,13 +72,9 @@ pub mod r_back_service_server {
     /// Generated trait containing gRPC methods that should be implemented for use with RBackServiceServer.
     #[async_trait]
     pub trait RBackService: Send + Sync + 'static {
-        async fn add_role(
+        async fn verify_user_permission(
             &self,
-            request: tonic::Request<super::AddRoleRequest>,
-        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
-        async fn add_user_role(
-            &self,
-            request: tonic::Request<super::AddUserRoleRequest>,
+            request: tonic::Request<super::VerifyUserPermissionRequest>,
         ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
         async fn get_all_roles(
             &self,
@@ -168,13 +172,13 @@ pub mod r_back_service_server {
         fn call(&mut self, req: http::Request<B>) -> Self::Future {
             let inner = self.inner.clone();
             match req.uri().path() {
-                "/rback.RBackService/AddRole" => {
+                "/rback.RBackService/VerifyUserPermission" => {
                     #[allow(non_camel_case_types)]
-                    struct AddRoleSvc<T: RBackService>(pub Arc<T>);
+                    struct VerifyUserPermissionSvc<T: RBackService>(pub Arc<T>);
                     impl<
                         T: RBackService,
-                    > tonic::server::UnaryService<super::AddRoleRequest>
-                    for AddRoleSvc<T> {
+                    > tonic::server::UnaryService<super::VerifyUserPermissionRequest>
+                    for VerifyUserPermissionSvc<T> {
                         type Response = super::Empty;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
@@ -182,55 +186,11 @@ pub mod r_back_service_server {
                         >;
                         fn call(
                             &mut self,
-                            request: tonic::Request<super::AddRoleRequest>,
-                        ) -> Self::Future {
-                            let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).add_role(request).await };
-                            Box::pin(fut)
-                        }
-                    }
-                    let accept_compression_encodings = self.accept_compression_encodings;
-                    let send_compression_encodings = self.send_compression_encodings;
-                    let max_decoding_message_size = self.max_decoding_message_size;
-                    let max_encoding_message_size = self.max_encoding_message_size;
-                    let inner = self.inner.clone();
-                    let fut = async move {
-                        let inner = inner.0;
-                        let method = AddRoleSvc(inner);
-                        let codec = tonic::codec::ProstCodec::default();
-                        let mut grpc = tonic::server::Grpc::new(codec)
-                            .apply_compression_config(
-                                accept_compression_encodings,
-                                send_compression_encodings,
-                            )
-                            .apply_max_message_size_config(
-                                max_decoding_message_size,
-                                max_encoding_message_size,
-                            );
-                        let res = grpc.unary(method, req).await;
-                        Ok(res)
-                    };
-                    Box::pin(fut)
-                }
-                "/rback.RBackService/AddUserRole" => {
-                    #[allow(non_camel_case_types)]
-                    struct AddUserRoleSvc<T: RBackService>(pub Arc<T>);
-                    impl<
-                        T: RBackService,
-                    > tonic::server::UnaryService<super::AddUserRoleRequest>
-                    for AddUserRoleSvc<T> {
-                        type Response = super::Empty;
-                        type Future = BoxFuture<
-                            tonic::Response<Self::Response>,
-                            tonic::Status,
-                        >;
-                        fn call(
-                            &mut self,
-                            request: tonic::Request<super::AddUserRoleRequest>,
+                            request: tonic::Request<super::VerifyUserPermissionRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).add_user_role(request).await
+                                (*inner).verify_user_permission(request).await
                             };
                             Box::pin(fut)
                         }
@@ -242,7 +202,7 @@ pub mod r_back_service_server {
                     let inner = self.inner.clone();
                     let fut = async move {
                         let inner = inner.0;
-                        let method = AddUserRoleSvc(inner);
+                        let method = VerifyUserPermissionSvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
