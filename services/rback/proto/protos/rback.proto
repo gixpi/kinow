@@ -8,11 +8,13 @@ service RBackService{
     rpc GetAllPermissions(Empty) returns (Permissions);
     rpc GetRolePermissions(GetRolePermissionsRequest) returns (Permissions);
     rpc GetUserRoles(GetUserRolesRequest) returns (Roles);
+    rpc AddUserRole(AddUserRoleRequest) returns (Empty);
+    rpc AddRolePermission(AddRolePermissionRequest) returns (Empty);
 }
 
 message Empty{}
 
-message  VerifyUserPermissionRequest{
+message VerifyUserPermissionRequest{
     string permission_id = 1;
     int32 user_id = 2;
 }
@@ -41,4 +43,14 @@ message GetRolePermissionsRequest{
 
 message GetUserRolesRequest{
     string user_id = 1;
+}
+
+message AddUserRoleRequest{
+    string role_id = 1;
+    string user_id = 2;
+}
+
+message AddRolePermissionRequest{
+    string role_id = 1;
+    string permission_id = 2;
 }

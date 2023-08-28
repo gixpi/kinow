@@ -10,7 +10,7 @@ CREATE TABLE "permissions"(
     "description" TEXT NOT NULL,
 );
 
-DROP TABLE IF EXISTS "user_role";
+DROP TABLE IF EXISTS "user_roles";
 CREATE TABLE "user_role"(
     role_id TEXT NOT NULL PRIMARY KEY REFERENCES "roles" ("role_id") ON DELETE CASCADE,
     user_id TEXT NOT NULL PRIMARY KEY,
