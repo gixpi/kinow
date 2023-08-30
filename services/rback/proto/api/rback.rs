@@ -28,14 +28,26 @@ pub struct Permissions {
 pub struct Role {
     #[prost(string, tag = "1")]
     pub role_id: ::prost::alloc::string::String,
-    #[prost(string, tag = "2")]
-    pub permission_id: ::prost::alloc::string::String,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Roles {
     #[prost(message, repeated, tag = "1")]
     pub roles: ::prost::alloc::vec::Vec<Role>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RolePermission {
+    #[prost(string, tag = "1")]
+    pub role_id: ::prost::alloc::string::String,
+    #[prost(message, repeated, tag = "2")]
+    pub permissions: ::prost::alloc::vec::Vec<Permission>,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RolePermissions {
+    #[prost(message, repeated, tag = "1")]
+    pub role_permissions: ::prost::alloc::vec::Vec<RolePermission>,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -91,7 +103,7 @@ pub mod r_back_service_server {
         async fn get_user_roles(
             &self,
             request: tonic::Request<super::GetUserRolesRequest>,
-        ) -> std::result::Result<tonic::Response<super::Roles>, tonic::Status>;
+        ) -> std::result::Result<tonic::Response<super::RolePermissions>, tonic::Status>;
         async fn add_user_role(
             &self,
             request: tonic::Request<super::AddUserRoleRequest>,
@@ -367,7 +379,7 @@ pub mod r_back_service_server {
                         T: RBackService,
                     > tonic::server::UnaryService<super::GetUserRolesRequest>
                     for GetUserRolesSvc<T> {
-                        type Response = super::Roles;
+                        type Response = super::RolePermissions;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,

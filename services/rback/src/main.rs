@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
 use clap::Parser;
-use rback::app::config::ParseConfig;
-use rback::app::database;
+use rbacklib::app::config::ParseConfig;
+use rbacklib::app::{database, handlers};
+use rbacklib::rback_proto::r_back_service_server::RBackServiceServer;
 use tonic::transport::Server;
 
 #[tokio::main]
@@ -19,12 +20,15 @@ async fn main() {
     
     println!("[INFO] Init Services");
     // init services
-
+    let rback_handler = handlers::rback::RBackHandler::new(pg_db_pool);
+    let rback_service = RBackServiceServer::new(rback_handler);
+    
     // authentication service
 
     println!("[INFO] Running Server On {}",parsed.listen_address);
-    // Server::builder()
-    // .serve(parsed.listen_address.parse().expect("could not parse the listener address"))
-    // .await
-    // .unwrap()
+    Server::builder()
+    .add_service(rback_service)
+    .serve(parsed.listen_address.parse().expect("could not parse the listener address"))
+    .await
+    .unwrap()
 }

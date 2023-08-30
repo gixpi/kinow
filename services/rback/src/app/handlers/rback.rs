@@ -10,7 +10,7 @@ use crate::rback_proto::{
     Permissions, 
     VerifyUserPermissionRequest, 
     GetUserRolesRequest, 
-    GetRolePermissionsRequest, AddUserRoleRequest, AddRolePermissionRequest,
+    GetRolePermissionsRequest, AddUserRoleRequest, AddRolePermissionRequest, RolePermissions,
     
     };
 pub struct RBackHandler{
@@ -30,16 +30,20 @@ impl RBackService for RBackHandler{
         Ok(Response::new(res))
     }
     async fn get_all_roles(&self,request:Request<Empty>)->Result<Response<Roles>,Status>{
-        todo!("Get All Roles")
+        let res = services::rback::get_all_roles(&self.postgres_db).await.map_err(|e| return e.to_status())?;
+        Ok(Response::new(res))
     }
     async fn get_all_permissions(&self,request:Request<Empty>)->Result<Response<Permissions>,Status>{
-        todo!("Get All Permissions")
+        let res = services::rback::get_all_permissions(&self.postgres_db).await.map_err(|e| return e.to_status())?;
+        Ok(Response::new(res))
     }
     async fn get_role_permissions(&self,request:Request<GetRolePermissionsRequest>)->Result<Response<Permissions>,Status>{
-        todo!("Get Role Permissions")
+        let res = services::rback::get_role_permissions(&self.postgres_db,request.into_inner()).await.map_err(|e| return e.to_status())?;
+        Ok(Response::new(res))
     }
-    async fn get_user_roles(&self,request:Request<GetUserRolesRequest>)->Result<Response<Roles>,Status>{
-        todo!("Get User Roles")
+    async fn get_user_roles(&self,request:Request<GetUserRolesRequest>)->Result<Response<RolePermissions>,Status>{
+        let res = services::rback::get_user_permissions(&self.postgres_db,request.into_inner()).await.map_err(|e| return e.to_status())?;
+        Ok(Response::new(res))
     }
     async fn add_user_role(&self,request:Request<AddUserRoleRequest>)->Result<Response<Empty>,Status>{
         todo!("Add User Role")
