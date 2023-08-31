@@ -1,7 +1,7 @@
 use sqlx::{Postgres, Row};
 
 use crate::app::types::error::Error;
-use crate::rback_proto::{Empty, VerifyUserPermissionRequest, Roles, Role, Permissions, Permission, GetRolePermissionsRequest, GetUserRolesRequest, RolePermissions, RolePermission};
+use crate::rback_proto::{Empty, VerifyUserPermissionRequest, Roles, Role, Permissions, Permission, GetRolePermissionsRequest, GetUserRolesRequest, RolePermissions, RolePermission, AddUserRoleRequest, AddRolePermissionRequest};
   
 pub async fn verify_user_permission(db_pool:&sqlx::Pool<Postgres>,data:VerifyUserPermissionRequest)->Result<Empty,Error>{
     let row = sqlx::query("
@@ -130,4 +130,67 @@ pub async fn get_user_permissions(db_pool:&sqlx::Pool<Postgres>,data:GetUserRole
     let role_permissions = role_permissions_map.into_values().collect();
 
     Ok(RolePermissions { role_permissions })
+}
+
+pub async fn add_user_role(db_pool:&sqlx::Pool<Postgres>,data:AddUserRoleRequest)->Result<Empty,Error>{
+    let row_exists = sqlx::query("SELECT 1 FROM roles WHERE role_id=$1")
+    .bind(data.role_id.clone())
+    .fetch_optional(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    if row_exists.is_none(){
+        return Err(Error::NotFoundError("role id not found #404".to_owned()))
+    }
+
+    let row_exists = sqlx::query("SELECT 1 FROM user_roles WHERE user_id=$1")
+    .bind(data.user_id.clone())
+    .fetch_optional(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    if row_exists.is_some(){
+        return Err(Error::NotFoundError("already exists #400".to_owned()))
+    }
+
+    sqlx::query("INSERT INTO user_roles VALUES ($1,$2)")
+    .bind(data.user_id)
+    .bind(data.role_id)
+    .execute(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    Ok(Empty{})
+}
+
+pub async fn add_role_permission(db_pool:&sqlx::Pool<Postgres>,data:AddRolePermissionRequest)->Result<Empty,Error>{
+    let row_exists = sqlx::query("SELECT 1 FROM permissions WHERE permission_id=$1")
+    .bind(data.permission_id.clone())
+    .fetch_optional(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    if row_exists.is_none(){
+        return Err(Error::NotFoundError("permission id not found #404".to_owned()))
+    }
+
+    let row_exists = sqlx::query("SELECT 1 FROM roles WHERE role_id=$1")
+    .bind(data.role_id.clone())
+    .fetch_optional(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    if row_exists.is_none(){
+        return Err(Error::NotFoundError("role id not found #404".to_owned()))
+    }
+
+
+    sqlx::query("INSERT INTO role_permissions VALUES ($1,$2)")
+    .bind(data.role_id)
+    .bind(data.permission_id)
+    .execute(db_pool)
+    .await
+    .map_err(|e|return Error::InternalError(e.to_string()))?;
+
+    Ok(Empty{})
 }
