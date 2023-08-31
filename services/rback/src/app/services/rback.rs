@@ -108,22 +108,26 @@ pub async fn get_user_permissions(db_pool:&sqlx::Pool<Postgres>,data:GetUserRole
 
 
     
-    let mut role_permissions = Vec::<RolePermission>::new();
-    
-    for row in rows{
+    let mut role_permissions_map = std::collections::HashMap::<String, RolePermission>::new();
 
-        let permission = Permission{
-            permission_id:row.get::<String,_>("permission_id"),
-            description:row.get::<String,_>("description"),
+    for row in rows {
+        let role_id = row.get::<String, _>("role_id");
+        let permission = Permission {
+            permission_id: row.get::<String, _>("permission_id"),
+            description: row.get::<String, _>("description"),
         };
-        
-        let role_permission = RolePermission{
-            role_id:row.get::<String,_>("role_id"),
-            permissions:vec![permission],
-        };
-        role_permissions.push(role_permission)
-        
+
+        let role_permission = role_permissions_map
+            .entry(role_id.clone())
+            .or_insert_with(|| RolePermission {
+                role_id: role_id.clone(),
+                permissions: Vec::new(),
+            });
+
+        role_permission.permissions.push(permission);
     }
 
-    Ok(RolePermissions{role_permissions})
+    let role_permissions = role_permissions_map.into_values().collect();
+
+    Ok(RolePermissions { role_permissions })
 }
