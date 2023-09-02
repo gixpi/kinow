@@ -233,7 +233,7 @@ pub mod token_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).verify_token(request).await
+                                <T as TokenService>::verify_token(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -278,7 +278,9 @@ pub mod token_service_server {
                             request: tonic::Request<super::RenewTokenRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).renew_token(request).await };
+                            let fut = async move {
+                                <T as TokenService>::renew_token(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -323,7 +325,8 @@ pub mod token_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).change_token_status(request).await
+                                <T as TokenService>::change_token_status(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -366,7 +369,9 @@ pub mod token_service_server {
                             request: tonic::Request<super::Pagination>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).get_tokens(request).await };
+                            let fut = async move {
+                                <T as TokenService>::get_tokens(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }

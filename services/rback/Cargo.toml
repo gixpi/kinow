@@ -13,17 +13,15 @@ name = "rbacklib"
 protocol = "sparse"
 
 [dependencies]
-tonic = "0.9"
-prost = "0.11.9"
+tonic = "0.10.0"
+prost = "0.12.0"
 tokio = { version = "1.32.0", features = ["full"] }
-clap = { version = "4.4.0", features = ["derive"] }
-chrono = { version = "0.4.26", features = ["serde"] }
+clap = { version = "4.3.15", features = ["derive"] }
+chrono = { version = "0.4.28", features = ["serde"] }
 sqlx = { version = "0.7.1", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
 thiserror = "1.0.47"
 serde = { version = "1.0.188", features = ["derive"] }
-# redis = { version = "0.23.0", features = ["tokio-comp"] }
 serde_json = "1.0.105"
-regex = "1.9.3"
 
 [build-dependencies]
-tonic-build = "0.9"
+tonic-build = "0.10.0"

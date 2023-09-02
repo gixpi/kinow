@@ -149,7 +149,9 @@ pub mod authentication_service_server {
                             request: tonic::Request<super::SignupRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).signup(request).await };
+                            let fut = async move {
+                                <T as AuthenticationService>::signup(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -193,7 +195,9 @@ pub mod authentication_service_server {
                             request: tonic::Request<super::SigninRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).signin(request).await };
+                            let fut = async move {
+                                <T as AuthenticationService>::signin(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }

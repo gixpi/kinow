@@ -204,7 +204,9 @@ pub mod device_service_server {
                             request: tonic::Request<super::Pagination>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).get_devices(request).await };
+                            let fut = async move {
+                                <T as DeviceService>::get_devices(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -249,7 +251,8 @@ pub mod device_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).change_device_status(request).await
+                                <T as DeviceService>::change_device_status(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -295,7 +298,7 @@ pub mod device_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).delete_device(request).await
+                                <T as DeviceService>::delete_device(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -341,7 +344,8 @@ pub mod device_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_user_devices(request).await
+                                <T as DeviceService>::get_user_devices(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }

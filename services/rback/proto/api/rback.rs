@@ -210,7 +210,8 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).verify_user_permission(request).await
+                                <T as RBackService>::verify_user_permission(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -254,7 +255,7 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_all_roles(request).await
+                                <T as RBackService>::get_all_roles(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -298,7 +299,8 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_all_permissions(request).await
+                                <T as RBackService>::get_all_permissions(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -344,7 +346,8 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_role_permissions(request).await
+                                <T as RBackService>::get_role_permissions(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -390,7 +393,7 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_user_roles(request).await
+                                <T as RBackService>::get_user_roles(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -436,7 +439,7 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).add_user_role(request).await
+                                <T as RBackService>::add_user_role(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -482,7 +485,8 @@ pub mod r_back_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).add_role_permission(request).await
+                                <T as RBackService>::add_role_permission(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }

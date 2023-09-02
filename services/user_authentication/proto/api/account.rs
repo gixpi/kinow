@@ -157,7 +157,9 @@ pub mod account_service_server {
                             request: tonic::Request<super::LogoutRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).logout(request).await };
+                            let fut = async move {
+                                <T as AccountService>::logout(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -202,7 +204,7 @@ pub mod account_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).kill_session(request).await
+                                <T as AccountService>::kill_session(&inner, request).await
                             };
                             Box::pin(fut)
                         }
@@ -248,7 +250,7 @@ pub mod account_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).get_sessions(request).await
+                                <T as AccountService>::get_sessions(&inner, request).await
                             };
                             Box::pin(fut)
                         }

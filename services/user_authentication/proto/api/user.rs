@@ -191,7 +191,9 @@ pub mod user_service_server {
                             request: tonic::Request<super::Pagination>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).get_users(request).await };
+                            let fut = async move {
+                                <T as UserService>::get_users(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
@@ -236,7 +238,8 @@ pub mod user_service_server {
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
                             let fut = async move {
-                                (*inner).change_user_status(request).await
+                                <T as UserService>::change_user_status(&inner, request)
+                                    .await
                             };
                             Box::pin(fut)
                         }
@@ -281,7 +284,9 @@ pub mod user_service_server {
                             request: tonic::Request<super::DeleteUserRequest>,
                         ) -> Self::Future {
                             let inner = Arc::clone(&self.0);
-                            let fut = async move { (*inner).delete_user(request).await };
+                            let fut = async move {
+                                <T as UserService>::delete_user(&inner, request).await
+                            };
                             Box::pin(fut)
                         }
                     }
