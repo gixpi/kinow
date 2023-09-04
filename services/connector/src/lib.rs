@@ -1,4 +1,4 @@
 pub mod app;
 
 #[path = "../proto/api/connector.rs"]
-pub mod connector;
+pub mod connector_proto;
