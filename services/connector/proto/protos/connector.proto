@@ -5,6 +5,7 @@ package connector;
 
 service ConnectorService{
     rpc GetAccessPoint(GetAccessPointRequest) returns (GetAccessPointResponse);
+    rpc SetAccessPoint(SetAccessPointRequest) returns (Empty);
 }
 
 
@@ -24,3 +25,11 @@ message GetAccessPointResponse{
     string ip = 1;
     string port = 2;
 }
+
+message SetAccessPointRequest{
+    string ip = 1;
+    string port = 2;
+    Points point = 3;
+}
+
+message Empty{}
