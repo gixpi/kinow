@@ -1,0 +1,26 @@
+syntax = "proto3";
+ 
+package connector;
+
+
+service ConnectorService{
+    rpc GetAccessPoint(GetAccessPointRequest) returns (GetAccessPointResponse);
+}
+
+
+enum Points{
+    TCP = 0;
+    UDP = 1;
+    WEB_RTC = 2;
+    WEB_SOCKET = 3;
+}
+
+message GetAccessPointRequest{
+    Points point = 1;
+    string ip = 2;
+}
+
+message GetAccessPointResponse{
+    string ip = 1;
+    string port = 2;
+}
