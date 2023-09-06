@@ -1,5 +1,8 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
+pub struct Empty {}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetTicketRequest {
     #[prost(enumeration = "Points", tag = "1")]
     pub point: i32,
@@ -9,8 +12,18 @@ pub struct GetTicketRequest {
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetTicketResponse {
-    #[prost(string, tag = "1")]
-    pub token: ::prost::alloc::string::String,
+    #[prost(int32, tag = "1")]
+    pub ticket: i32,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct VerifyTicketRequest {
+    #[prost(int32, tag = "1")]
+    pub ticket_id: i32,
+    #[prost(string, tag = "2")]
+    pub ip: ::prost::alloc::string::String,
+    #[prost(string, tag = "3")]
+    pub agent: ::prost::alloc::string::String,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
@@ -59,6 +72,10 @@ pub mod ticket_service_server {
             tonic::Response<super::GetTicketResponse>,
             tonic::Status,
         >;
+        async fn verify(
+            &self,
+            request: tonic::Request<super::VerifyTicketRequest>,
+        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
     }
     #[derive(Debug)]
     pub struct TicketServiceServer<T: TicketService> {
@@ -170,6 +187,52 @@ pub mod ticket_service_server {
                     let fut = async move {
                         let inner = inner.0;
                         let method = GetTicketSvc(inner);
+                        let codec = tonic::codec::ProstCodec::default();
+                        let mut grpc = tonic::server::Grpc::new(codec)
+                            .apply_compression_config(
+                                accept_compression_encodings,
+                                send_compression_encodings,
+                            )
+                            .apply_max_message_size_config(
+                                max_decoding_message_size,
+                                max_encoding_message_size,
+                            );
+                        let res = grpc.unary(method, req).await;
+                        Ok(res)
+                    };
+                    Box::pin(fut)
+                }
+                "/ticket.TicketService/Verify" => {
+                    #[allow(non_camel_case_types)]
+                    struct VerifySvc<T: TicketService>(pub Arc<T>);
+                    impl<
+                        T: TicketService,
+                    > tonic::server::UnaryService<super::VerifyTicketRequest>
+                    for VerifySvc<T> {
+                        type Response = super::Empty;
+                        type Future = BoxFuture<
+                            tonic::Response<Self::Response>,
+                            tonic::Status,
+                        >;
+                        fn call(
+                            &mut self,
+                            request: tonic::Request<super::VerifyTicketRequest>,
+                        ) -> Self::Future {
+                            let inner = Arc::clone(&self.0);
+                            let fut = async move {
+                                <T as TicketService>::verify(&inner, request).await
+                            };
+                            Box::pin(fut)
+                        }
+                    }
+                    let accept_compression_encodings = self.accept_compression_encodings;
+                    let send_compression_encodings = self.send_compression_encodings;
+                    let max_decoding_message_size = self.max_decoding_message_size;
+                    let max_encoding_message_size = self.max_encoding_message_size;
+                    let inner = self.inner.clone();
+                    let fut = async move {
+                        let inner = inner.0;
+                        let method = VerifySvc(inner);
                         let codec = tonic::codec::ProstCodec::default();
                         let mut grpc = tonic::server::Grpc::new(codec)
                             .apply_compression_config(
