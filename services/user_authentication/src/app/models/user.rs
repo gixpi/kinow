@@ -12,7 +12,7 @@ pub struct User{
 
 impl User{
     pub fn new(phone_number:&String)->Self{
-        let user_id = idgen::numeric_code_i32(10048364,2147483647);
+        let user_id = idgen::numeric_code_i32(104834,2147483647);
         Self{
             user_id,
             phone_number:phone_number.to_owned(),

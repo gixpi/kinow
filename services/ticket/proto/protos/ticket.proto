@@ -20,6 +20,8 @@ enum Points{
 message GetTicketRequest{
     Points point = 1;
     int32 user_id = 2;
+    string ip = 3;
+    string agent = 4;
 }
 
 message GetTicketResponse{
