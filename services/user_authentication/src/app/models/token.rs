@@ -39,7 +39,7 @@ impl Token{
     }
 
     pub fn validate_expiry(&self)->bool{
-        self.access_token_expire_at > chrono::Local::now()
+        self.access_token_expire_at > chrono::Utc::now()
     }
     
 }

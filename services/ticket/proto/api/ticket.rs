@@ -1,8 +1,5 @@
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
-pub struct Empty {}
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetTicketRequest {
     #[prost(enumeration = "Points", tag = "1")]
     pub point: i32,
@@ -17,7 +14,7 @@ pub struct GetTicketRequest {
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GetTicketResponse {
     #[prost(int32, tag = "1")]
-    pub ticket: i32,
+    pub ticket_id: i32,
 }
 #[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
@@ -27,6 +24,18 @@ pub struct VerifyTicketRequest {
     #[prost(string, tag = "2")]
     pub ip: ::prost::alloc::string::String,
     #[prost(string, tag = "3")]
+    pub agent: ::prost::alloc::string::String,
+}
+#[allow(clippy::derive_partial_eq_without_eq)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct VerifyTicketResponse {
+    #[prost(int32, tag = "1")]
+    pub user_id: i32,
+    #[prost(enumeration = "Points", tag = "2")]
+    pub point: i32,
+    #[prost(string, tag = "3")]
+    pub ip: ::prost::alloc::string::String,
+    #[prost(string, tag = "4")]
     pub agent: ::prost::alloc::string::String,
 }
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
@@ -79,7 +88,10 @@ pub mod ticket_service_server {
         async fn verify(
             &self,
             request: tonic::Request<super::VerifyTicketRequest>,
-        ) -> std::result::Result<tonic::Response<super::Empty>, tonic::Status>;
+        ) -> std::result::Result<
+            tonic::Response<super::VerifyTicketResponse>,
+            tonic::Status,
+        >;
     }
     #[derive(Debug)]
     pub struct TicketServiceServer<T: TicketService> {
@@ -213,7 +225,7 @@ pub mod ticket_service_server {
                         T: TicketService,
                     > tonic::server::UnaryService<super::VerifyTicketRequest>
                     for VerifySvc<T> {
-                        type Response = super::Empty;
+                        type Response = super::VerifyTicketResponse;
                         type Future = BoxFuture<
                             tonic::Response<Self::Response>,
                             tonic::Status,

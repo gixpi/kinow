@@ -1,8 +1,9 @@
 use std::sync::Arc;
 use sqlx::Postgres;
 use tonic::{Request, Response, Status};
+use crate::app::services;
 use crate::ticket_proto::ticket_service_server::TicketService;
-use crate::ticket_proto::{GetTicketRequest,GetTicketResponse,Empty,VerifyTicketRequest};
+use crate::ticket_proto::{GetTicketRequest,GetTicketResponse,VerifyTicketRequest,VerifyTicketResponse};
 
 
 
@@ -19,9 +20,11 @@ impl TicketHandler{
 #[tonic::async_trait]
 impl TicketService for TicketHandler{
     async fn get_ticket(&self,request:Request<GetTicketRequest>)->Result<Response<GetTicketResponse>,Status>{
-        todo!("Get Ticket")
+        let res = services::ticket::get_ticket(&self.postgres_db, request.into_inner()).await.map_err(|e| return e.to_status())?;
+        Ok(Response::new(res))
     }
-    async fn verify(&self,request:Request<VerifyTicketRequest>)->Result<Response<Empty>,Status>{
-        todo!("Verify")
+    async fn verify(&self,request:Request<VerifyTicketRequest>)->Result<Response<VerifyTicketResponse>,Status>{
+        let res = services::ticket::verify(&self.postgres_db, request.into_inner()).await.map_err(|e| return e.to_status())?;
+        Ok(Response::new(res))
     }
 }

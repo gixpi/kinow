@@ -4,10 +4,8 @@ package ticket;
 
 service TicketService{
     rpc GetTicket(GetTicketRequest) returns (GetTicketResponse);
-    rpc Verify(VerifyTicketRequest) returns (Empty);
+    rpc Verify(VerifyTicketRequest) returns (VerifyTicketResponse);
 }
-
-message Empty{}
 
 enum Points{
     TCP = 0;
@@ -25,11 +23,18 @@ message GetTicketRequest{
 }
 
 message GetTicketResponse{
-    int32 ticket = 1;
+    int32 ticket_id = 1;
 }
 
 message VerifyTicketRequest{
     int32 ticket_id = 1;
     string ip = 2;
     string agent = 3;
+}
+
+message VerifyTicketResponse{
+    int32 user_id = 1;
+    Points point = 2;
+    string ip = 3;
+    string agent = 4;
 }
