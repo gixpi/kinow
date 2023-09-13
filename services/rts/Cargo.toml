@@ -1,14 +1,13 @@
 [package]
-name = "authentication"
+name = "rts"
 version = "0.1.0"
 edition = "2021"
-author = ["gixpi </>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "user_authenticationlib"
 path = "src/lib.rs"
+name = "rtslib"
 
 [registries.crates-io]
 protocol = "sparse"
@@ -20,15 +19,9 @@ tokio = { version = "1.32.0", features = ["full"] }
 clap = { version = "4.4.3", features = ["derive"] }
 chrono = { version = "0.4.30", features = ["serde"] }
 sqlx = { version = "0.7.1", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
-idgen = {path="../../libs/idgen"}
-thiserror = "1.0.47"
+thiserror = "1.0.48"
 serde = { version = "1.0.188", features = ["derive"] }
-# redis = { version = "0.23.0", features = ["tokio-comp"] }
 serde_json = "1.0.106"
-bb8-redis = "0.13.1"
-bb8 = "0.8.1"
-regex = "1.9.5"
-reqwest = { version = "0.11.20", features = ["json"] }
 
 [build-dependencies]
 tonic-build = "0.10.0"

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package rts;
+
+service RtsService{
+    rpc GetReports(GetReportsRequest) returns (Reports);
+    rpc AddReport(AddReportRequest) returns (Empty);
+}
+
+message AddReportRequest{
+    string report_message = 1;
+    string description = 2;
+    int32 announced_at = 3;
+}
+
+message Empty{}
+
+message Pagination{
+    int32 offset = 1;
+    int32 limit = 2;
+    bool get_total = 3;
+}
+
+message GetReportsRequest{
+    Pagination pagination = 1;
+    string device_id = 2;
+}
+
+message Report{
+    int32 id = 1;
+    int32 device_id = 2;
+    string report_message = 3;
+    string description = 4;
+    string announced_at = 5;
+    string received_at = 6;
+}
+
+message Reports{
+    Report reports = 1; 
+}
