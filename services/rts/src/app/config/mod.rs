@@ -9,29 +9,38 @@ pub struct ParseConfig{
     #[arg(required = true,long, default_value = "127.0.0.1:8084")]
     pub listen_address:String,
     
-    ///  [POSTGRES DB. HOST]
+    ///  [INFLUX DB. TLS]
+    ///   ex.(false)
+    #[arg(required = true,long)]
+    pub db_tls:bool,
+
+    ///  [INFLUX DB. HOST]
     ///   ex.(localhost OR 127.0.0.1)
     #[arg(required = true,long)]
     pub db_host:String,
 
-    ///  [POSTGRES DB. PORT]
-    ///  ex.(5432)
+    ///  [INFLUX DB. PORT]
+    ///  ex.(8086)
     #[arg(required = true,long,)]
     pub db_port:usize,
 
-    ///  [POSTGRES DB. USERNAME]
-    ///  ex.(postgres)
+    ///  [INFLUX DB. USERNAME]
+    ///  ex.(INFLUX)
     #[arg(required = true,long,)]
     pub db_username:String,
 
-    ///  [POSTGRES DB. PASSWORD]
-    ///  ex.(postgres)
+    ///  [INFLUX DB. PASSWORD]
+    ///  ex.(INFLUX)
     #[arg(required = true,long,)]
     pub db_password:String,
 
-    ///  [POSTGRES DB. NAME]
-    ///  ex.(postgres)
+    ///  [INFLUX DB. TOKEN]
+    ///  ex.(T)
     #[arg(required = true,long,)]
-    pub db_name:String,
+    pub db_token:String,
 
+    ///  [INFLUX DB. BUCKET]
+    ///  ex.(BUCKET)
+    #[arg(required = true,long,)]
+    pub db_bucket:String,
 }

@@ -1,3 +1,6 @@
+use clap::Parser;
+use rtslib::app::config::ParseConfig;
+
 fn main() {
-    println!("Hello, world!");
+    ParseConfig::parse();
 }
